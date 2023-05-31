@@ -2,8 +2,8 @@ This is an browser extension for the online game [Airline-Club.com](https://www.
 
 ## Features
 
-Displays current oil price in header
-Sends notification when oil drops below $60.
+- Displays current oil price in header
+- Sends notification when oil drops below $60.
 
 ## Getting Started
 
