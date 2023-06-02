@@ -1,40 +1,10 @@
 import type { PlasmoCSConfig } from "plasmo"
 
+import { getStyleFromTier, getTierFromPercent } from "~helpers/tiers"
+
 export const config: PlasmoCSConfig = {
   matches: ["https://*.airline-club.com/*"],
   run_at: "document_idle"
-}
-
-declare global {
-  interface Window {
-    showOilCanvas: () => void
-  }
-}
-
-const stylesFromGoodToBad = [
-  "color:#29FF66;",
-  "color:#5AB874;",
-  "color:inherit;",
-  "color:#FA8282;",
-  "color:#FF6969;",
-  "color:#FF3D3D;font-weight: bold;"
-]
-
-function getStyleFromTier(tier: number) {
-  return stylesFromGoodToBad[tier]
-}
-
-function getTierFromPercent(val: number, min = 0, max = 100) {
-  const availableRange = max - min
-  const ranges = [0.95, 0.8, 0.75, 0.6, 0.5].map((multiplier) => availableRange * multiplier + min)
-
-  if (val > ranges[0]) return 0
-  if (val > ranges[1]) return 1
-  if (val > ranges[2]) return 2
-  if (val > ranges[3]) return 3
-  if (val > ranges[4]) return 4
-
-  return 5
 }
 
 function _updateLatestOilPriceInHeader(latestPrice: number) {
