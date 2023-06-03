@@ -19,7 +19,6 @@ declare global {
     assignAirlineColors: (dataSet: any, colorProperty: string) => boolean
     getCountryFlagImg: (code: string) => string
     getAirportText: (city: string, code: string) => string
-    getGradeStarsImgs: (grade: number) => string[]
     sortPreserveOrder: (links: Link[], sortProperty: string, ascending: boolean) => Link[]
     selectLinkFromTable: (row: HTMLDivElement, linkId: number) => void
     disableButton: (button: HTMLButtonElement, reason?: string) => void

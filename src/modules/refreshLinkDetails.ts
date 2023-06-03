@@ -1,4 +1,4 @@
-import { fadeIn } from "~/helpers/utils"
+import { fadeIn, hideActiveDiv, setActiveDiv } from "~/helpers/utils"
 import { loadLink } from "~/modules/loadLink"
 
 export async function refreshLinkDetails(linkId: number): Promise<void> {
@@ -16,21 +16,21 @@ export async function refreshLinkDetails(linkId: number): Promise<void> {
 
   const linkDetailsPanel = window.document.getElementById("linkDetails")
   if (linkDetailsPanel) {
-    window.setActiveDiv(linkDetailsPanel)
+    setActiveDiv(linkDetailsPanel)
   }
 
   const airplaneModelDetailsPanel = window.document
     .getElementById("extendedPanel")
     ?.querySelector("#airplaneModelDetails")
   if (airplaneModelDetailsPanel) {
-    window.hideActiveDiv(airplaneModelDetailsPanel)
+    hideActiveDiv(airplaneModelDetailsPanel)
   }
 
   const sidePanel = window.document.getElementById("sidePanel")
   if (sidePanel) {
     sidePanel.style.display = "block"
     sidePanel.style.opacity = "0"
-    fadeIn(sidePanel)
+    fadeIn(sidePanel, 500)
   }
 
   const { link, linkCompetition, linkHistory } = await linkDetailsPromise

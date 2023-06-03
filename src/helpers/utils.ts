@@ -26,20 +26,110 @@ export function populateDerivedFieldsOnLink(link: Link): void {
   link.profitPerHour = link.profit / link.duration
 }
 
-export function fadeIn(el: HTMLElement, display: string = "block"): void {
-  el.style.opacity = "0"
-  el.style.display = display
+export function setActiveDiv(activeDiv: Element, callback?: () => void): boolean {
+  if (!(activeDiv instanceof HTMLElement)) {
+    return false
+  }
 
-  function fade(): void {
-    let val = parseFloat(el.style.opacity)
-    val += 0.1
-    if (val <= 1) {
-      el.style.opacity = val.toString()
-      requestAnimationFrame(fade)
+  const parentElement = activeDiv.parentElement
+  const existingActiveDivs = Array.from(parentElement?.children ?? []).filter((element) => {
+    return element instanceof HTMLElement && getComputedStyle(element).clear !== "both"
+  })
+
+  if (!callback && activeDiv.dataset.initCallback) {
+    callback = eval(activeDiv.dataset.initCallback) as () => void
+    delete activeDiv.dataset.initCallback
+  }
+
+  if (existingActiveDivs.length > 0) {
+    existingActiveDivs.forEach((existingDiv: HTMLElement) => existingDiv.classList.remove("active"))
+    activeDiv.classList.add("active")
+    existingActiveDivs.forEach((existingDiv: HTMLElement) => (existingDiv.style.display = "none"))
+    fadeIn(activeDiv, 400, callback)
+  } else {
+    if (activeDiv.style.display === "block") {
+      if (callback) {
+        callback()
+      }
+      return false
+    } else {
+      Array.from(parentElement?.children ?? []).forEach((element) => {
+        if (element instanceof HTMLElement) {
+          element.style.display = "none"
+        }
+      })
+      activeDiv.classList.add("active")
+      fadeIn(activeDiv, 200, callback)
     }
   }
 
-  fade()
+  if (parentElement && parentElement instanceof HTMLElement) {
+    parentElement.style.display = "block"
+  }
+  return true
+}
+
+export function hideActiveDiv(activeDiv: Element): void {
+  if (activeDiv instanceof HTMLElement && activeDiv.style.display === "block") {
+    fadeOut(activeDiv, 200, () => {
+      if (activeDiv.parentElement && activeDiv.parentElement instanceof HTMLElement) {
+        activeDiv.parentElement.style.display = "none"
+      }
+    })
+  }
+}
+
+export function fadeIn(element: Element, duration: number, callback?: () => void): void {
+  if (!(element instanceof HTMLElement)) {
+    return
+  }
+
+  const htmlElement = element as HTMLElement
+
+  htmlElement.style.opacity = "0"
+  htmlElement.style.display = "block"
+  let start = performance.now()
+
+  function step(timestamp: number): void {
+    let progress = timestamp - start
+    if (progress >= duration) {
+      htmlElement.style.opacity = "1"
+      if (callback) {
+        callback()
+      }
+    } else {
+      htmlElement.style.opacity = String(progress / duration)
+      requestAnimationFrame(step)
+    }
+  }
+
+  requestAnimationFrame(step)
+}
+
+export function fadeOut(element: Element, duration: number, callback?: () => void): void {
+  if (!(element instanceof HTMLElement)) {
+    return
+  }
+
+  const htmlElement = element as HTMLElement
+
+  let start = performance.now()
+
+  function step(timestamp: number): void {
+    let progress = timestamp - start
+    if (progress >= duration) {
+      htmlElement.style.opacity = "0"
+      htmlElement.style.display = "none"
+      if (callback) {
+        callback()
+      }
+    } else {
+      htmlElement.style.opacity = String(1 - progress / duration)
+      requestAnimationFrame(step)
+    }
+  }
+
+  requestAnimationFrame(step)
 }
 
 export function plotHistory(linkConsumptions) {
@@ -48,6 +138,26 @@ export function plotHistory(linkConsumptions) {
   if (linkHistoryDetails) {
     linkHistoryDetails.style.display = "block"
   }
+}
+
+export function getGradeStarsImgs(gradeValue: number): string {
+  const fullStars = Math.floor(gradeValue / 2)
+  const halfStar = gradeValue % 2
+  let html = ""
+
+  for (let i = 0; i < fullStars; i++) {
+    html += "<img src='assets/images/icons/star.png'/>"
+  }
+
+  if (halfStar) {
+    html += "<img src='assets/images/icons/star-half.png'/>"
+  }
+
+  for (let i = 0; i < 5 - fullStars - halfStar; i++) {
+    html += "<img src='assets/images/icons/star-empty.png'/>"
+  }
+
+  return html
 }
 
 export function getLoadFactorsFor(consumption: Link): Record<string, number | string> {

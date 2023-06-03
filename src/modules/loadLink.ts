@@ -3,6 +3,8 @@ import { loadCompetitionForLink } from "~/modules/loadCompetitionForLink"
 import { loadHistoryForLink } from "~/modules/loadHistoryForLink"
 import type { Link } from "~/types/types"
 
+import { getGradeStarsImgs } from "../helpers/utils"
+
 export async function loadLink(
   airlineId: number,
   linkId: number
@@ -28,7 +30,7 @@ export async function loadLink(
   window.document.getElementById("linkCurrentPrice").textContent = window.toLinkClassValueString(link.price, "$")
   window.document.getElementById("linkDistance").textContent = `${link.distance} km (${link.flightType})`
   window.document.getElementById("linkQuality").innerHTML =
-    window.getGradeStarsImgs(Math.round(link.computedQuality / 10)).join("") + link.computedQuality
+    getGradeStarsImgs(Math.round(link.computedQuality / 10)) + "" + link.computedQuality
   window.document.getElementById("linkCurrentCapacity").textContent = window.toLinkClassValueString(link.capacity)
 
   if (link.future) {
