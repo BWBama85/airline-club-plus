@@ -2,6 +2,7 @@ import type { PlasmoCSConfig } from "plasmo"
 
 import { loadLinksTable } from "~/modules/loadLinksTable"
 import type { ActiveAirline, DataSourceEntry, Link } from "~/types/types"
+import { toggleLinksTableSortOrder } from "~helpers/utils"
 
 export const config: PlasmoCSConfig = {
   world: "MAIN",
@@ -26,6 +27,7 @@ declare global {
     plotHistory: (LinkHistory: Link) => void
     plotLinkCharts: (linkConsumption: Link, plotUnit?: any) => void
     getLoadFactorsFor: (consumption: Link) => number[]
+    toggleLinksTableSortOrder: (sortHeader: HTMLElement) => void
     plotPie: (
       dataSource: { [key: string]: DataSourceEntry },
       currentKey: string,
@@ -47,5 +49,6 @@ declare global {
 }
 
 window.addEventListener("DOMContentLoaded", async () => {
+  window.toggleLinksTableSortOrder = toggleLinksTableSortOrder
   window.loadLinksTable = loadLinksTable
 })
