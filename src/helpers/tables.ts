@@ -23,13 +23,9 @@ export function appendCell(
 
   if (typeof content === "string") {
     cell.textContent = content
-    console.log(cell.textContent)
   } else if (content instanceof Document) {
-    console.log(content)
     const rootElement = content.documentElement
-    console.log(rootElement)
     const importedRootElement = document.importNode(rootElement, true)
-    console.log(importedRootElement)
     cell.appendChild(importedRootElement)
   }
 
