@@ -28,13 +28,6 @@ declare global {
     plotLinkCharts: (linkConsumption: Link, plotUnit?: any) => void
     getLoadFactorsFor: (consumption: Link) => number[]
     toggleLinksTableSortOrder: (sortHeader: HTMLElement) => void
-    plotPie: (
-      dataSource: { [key: string]: DataSourceEntry },
-      currentKey: string,
-      container: HTMLElement,
-      keyName?: string,
-      valueName?: string
-    ) => void
     plotUnitEnum: {
       MONTH: any
       QUARTER: any
