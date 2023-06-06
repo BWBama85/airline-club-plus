@@ -63,3 +63,10 @@ export interface DataSourceEntry {
 export interface averageFromSubKey {
   [key: string]: any
 }
+
+export type EntryType = {
+  label: string
+  value: any
+  color?: string
+  issliced?: string
+}

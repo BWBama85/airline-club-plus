@@ -1,4 +1,5 @@
 import { fetchData } from "~/apiService"
+import { plotPie } from "~helpers/plotPie"
 
 export async function loadCompetitionForLink(airlineId: number, link: any): Promise<any> {
   const linkConsumptions = await fetchData(`airports/${link.fromAirportId}/to/${link.toAirportId}`)
@@ -41,7 +42,7 @@ export async function loadCompetitionForLink(airlineId: number, link: any): Prom
   linkCompetitions.style.display = "block"
 
   window.assignAirlineColors(linkConsumptions, "airlineId")
-  window.plotPie(linkConsumptions, null, document.getElementById("linkCompetitionsPie"), "airlineName", "soldSeats")
+  plotPie(linkConsumptions, null, document.getElementById("linkCompetitionsPie"), "airlineName", "soldSeats")
 
   return linkConsumptions
 }
