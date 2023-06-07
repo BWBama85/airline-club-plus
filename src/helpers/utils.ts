@@ -131,14 +131,6 @@ export function fadeOut(element: Element, duration: number, callback?: () => voi
   requestAnimationFrame(step)
 }
 
-export function plotHistory(linkConsumptions) {
-  window.plotLinkCharts(linkConsumptions)
-  const linkHistoryDetails = document.getElementById("linkHistoryDetails")
-  if (linkHistoryDetails) {
-    linkHistoryDetails.style.display = "block"
-  }
-}
-
 export function getGradeStarsImgs(gradeValue: number): string {
   const fullStars = Math.floor(gradeValue / 2)
   const halfStar = gradeValue % 2
