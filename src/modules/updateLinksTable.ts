@@ -2,8 +2,6 @@ import { appendCell, prependCell } from "~/helpers/tables"
 import { getStyleFromTier, getTierFromPercent } from "~/helpers/tiers"
 import { getShortModelName, selectLinkFromTable } from "~/helpers/utils"
 
-import type { Link } from "../types/types"
-
 export function updateLinksTable(sortProperty: string, sortOrder: string) {
   let colorKeyMaps: { [key: string]: WeakMap<Link, any> } = {}
   const linksTable = window.document.querySelector("#linksCanvas #linksTable")

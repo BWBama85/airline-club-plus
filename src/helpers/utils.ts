@@ -1,6 +1,5 @@
 import { refreshLinkDetails } from "~/modules/refreshLinkDetails"
 import { updateLinksTable } from "~modules/updateLinksTable"
-import type { Link } from "~types/types"
 
 export function populateDerivedFieldsOnLink(link: Link): void {
   link.totalCapacity = link.capacity.economy + link.capacity.business + link.capacity.first

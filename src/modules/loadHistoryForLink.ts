@@ -1,6 +1,5 @@
 import { fetchData } from "~/apiService"
 import { averageFromSubKey } from "~/helpers/utils"
-import type { Link } from "~/types/types"
 
 export async function loadHistoryForLink(
   airlineId: number,

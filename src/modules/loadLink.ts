@@ -1,7 +1,6 @@
 import { fetchData } from "~/apiService"
 import { loadCompetitionForLink } from "~/modules/loadCompetitionForLink"
 import { loadHistoryForLink } from "~/modules/loadHistoryForLink"
-import type { Link } from "~/types/types"
 
 import { getGradeStarsImgs } from "../helpers/utils"
 
