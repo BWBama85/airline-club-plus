@@ -1,4 +1,3 @@
-import { refreshLinkDetails } from "~/modules/refreshLinkDetails"
 import { updateLinksTable } from "~modules/updateLinksTable"
 
 export function populateDerivedFieldsOnLink(link: Link): void {
@@ -202,7 +201,7 @@ export function selectLinkFromTable(row: HTMLDivElement, linkId: number): void {
   siblings.forEach((sibling) => sibling.classList.remove("selected"))
   row.classList.add("selected")
 
-  refreshLinkDetails(linkId)
+  window.refreshLinkDetails(linkId)
 }
 
 export function toggleLinksTableSortOrder(sortHeader: HTMLElement): void {
