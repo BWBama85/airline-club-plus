@@ -170,7 +170,7 @@ export function getLoadFactorsFor(consumption: Link): Record<string, number | st
 
 export function getFactorPercent(consumption: Link, subType: string): number | null {
   return consumption.capacity[subType] > 0
-    ? (consumption.soldSeats[subType] / consumption.capacity[subType]) * 100
+    ? Math.round((consumption.soldSeats[subType] / consumption.capacity[subType]) * 100)
     : null
 }
 
