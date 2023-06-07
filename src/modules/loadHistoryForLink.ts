@@ -1,5 +1,5 @@
 import { fetchData } from "~/apiService"
-import { averageFromSubKey } from "~/helpers/utils"
+import { averageFromSubKey, getLoadFactorsFor, plotHistory } from "~/helpers/utils"
 
 export async function loadHistoryForLink(
   airlineId: number,
@@ -36,7 +36,7 @@ export async function loadHistoryForLink(
       "Passenger Survey is not yet available for this route - please wait for the simulation (time estimation on top left of the screen)."
     )
 
-    window.plotHistory(linkHistory)
+    plotHistory(linkHistory)
     return
   }
 
@@ -62,7 +62,7 @@ export async function loadHistoryForLink(
     window.document.getElementById("linkProfit")!.parentElement!.insertAdjacentElement("afterend", profitDiv)
   }
 
-  const averageLoadFactor = window.getLoadFactorsFor({
+  const averageLoadFactor = getLoadFactorsFor({
     soldSeats: {
       economy: averageFromSubKey(linkHistory, "soldSeats", "economy"),
       business: averageFromSubKey(linkHistory, "soldSeats", "business"),
@@ -84,7 +84,7 @@ export async function loadHistoryForLink(
     latestLinkData.capacity
   )
   window.document.getElementById("linkLoadFactor")!.textContent = window.toLinkClassValueString(
-    window.getLoadFactorsFor(latestLinkData),
+    getLoadFactorsFor(latestLinkData),
     "",
     "%"
   )
@@ -136,7 +136,7 @@ export async function loadHistoryForLink(
   window.enableButton(window.document.querySelector("#linkDetails .button.viewLinkHistory") as HTMLButtonElement)
   window.enableButton(window.document.querySelector("#linkDetails .button.viewLinkComposition") as HTMLButtonElement)
 
-  window.plotHistory(linkHistory)
+  plotHistory(linkHistory)
 
   return linkHistory
 }
