@@ -13,3 +13,8 @@ window.addEventListener("DOMContentLoaded", async () => {
   window.toggleLinksTableSortOrder = toggleLinksTableSortOrder
   window.loadLinksTable = loadLinksTable
 })
+
+window.addEventListener("load", async () => {
+  const $ = window.$
+  $.cookie = window.$.cookie
+})
