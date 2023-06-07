@@ -1,4 +1,5 @@
 interface Window {
+  $: JQueryStatic
   updateCustomLinkTableHeader: () => void
   refreshLinkDetails: (LinkId: number) => Promise<void>
   updateLoadedLinks: (links: Link[]) => void

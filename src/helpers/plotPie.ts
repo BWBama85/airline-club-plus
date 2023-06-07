@@ -1,4 +1,4 @@
-import FusionCharts from "fusioncharts"
+// import FusionCharts from "fusioncharts"
 
 const stringHashCode = (s: string): number => {
   let h = 0
@@ -120,6 +120,6 @@ export const plotPie = (
   }
 
   // Error is currently produced, needs investigation
-  const chartInstance = new FusionCharts(chartConfig)
-  chartInstance.render()
+  // const chartInstance = new FusionCharts(chartConfig)
+  // chartInstance.render()
 }

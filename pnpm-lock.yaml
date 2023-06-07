@@ -5,9 +5,6 @@ settings:
   excludeLinksFromLockfile: false
 
 dependencies:
-  fusioncharts:
-    specifier: ^3.12.2
-    version: 3.12.2
   plasmo:
     specifier: 0.75.0
     version: 0.75.0(react-dom@18.2.0)(react@18.2.0)
@@ -25,6 +22,12 @@ devDependencies:
   '@types/chrome':
     specifier: 0.0.237
     version: 0.0.237
+  '@types/jquery':
+    specifier: ^3.5.16
+    version: 3.5.16
+  '@types/jquery.cookie':
+    specifier: ^1.4.32
+    version: 1.4.32
   '@types/node':
     specifier: 20.2.5
     version: 20.2.5
@@ -2370,6 +2373,18 @@ packages:
     resolution: {integrity: sha512-SZs7ekbP8CN0txVG2xVRH6EgKmEm31BOxA07vkFaETzZz1xh+cbt8BcI0slpymvwhx5dlFnQG2rTlPVQn+iRPQ==}
     dev: false
 
+  /@types/jquery.cookie@1.4.32:
+    resolution: {integrity: sha512-DnOPaZj8UZ5Kt8ZJuzfOKA+4UK7ihjtOPfbo6U3wr/AA/rWd9Ov0b3zMSD3X+y8yeedTsw/DJ0kkX5sl5oVu1w==}
+    dependencies:
+      '@types/jquery': 3.5.16
+    dev: true
+
+  /@types/jquery@3.5.16:
+    resolution: {integrity: sha512-bsI7y4ZgeMkmpG9OM710RRzDFp+w4P1RGiIt30C1mSBT+ExCleeh4HObwgArnDFELmRrOpXgSYN9VF1hj+f1lw==}
+    dependencies:
+      '@types/sizzle': 2.3.3
+    dev: true
+
   /@types/json-schema@7.0.12:
     resolution: {integrity: sha512-Hr5Jfhc9eYOQNPYO5WLDq/n4jqijdHNlDXjuAQkkt+mWdQR+XJToOHrsD4cPaMXpn6KO7y2+wM8AZEs8VpBLVA==}
     dev: false
@@ -2402,6 +2417,10 @@ packages:
 
   /@types/scheduler@0.16.3:
     resolution: {integrity: sha512-5cJ8CB4yAx7BH1oMvdU0Jh9lrEXyPkar6F9G/ERswkCuvP4KQZfZkSjcMbAICCpQTN4OuZn8tz0HiKv9TGZgrQ==}
+    dev: true
+
+  /@types/sizzle@2.3.3:
+    resolution: {integrity: sha512-JYM8x9EGF163bEyhdJBpR2QX1R5naCJHC8ucJylJ3w9/CVBaskdQ8WqBf8MmQrd1kRvp/a4TS8HJ+bxzR7ZJYQ==}
     dev: true
 
   /@vue/compiler-core@3.3.4:
@@ -3273,10 +3292,6 @@ packages:
     requiresBuild: true
     dev: false
     optional: true
-
-  /fusioncharts@3.12.2:
-    resolution: {integrity: sha512-uCOkD1KN7NbZRS0xsA3BYhxYeOeKab2oWlAN9i60g2Hu+Hap7kphGlS9o6y6YJLHu7494/f4+/Hu5D0VSVmytg==}
-    dev: false
 
   /gensync@1.0.0-beta.2:
     resolution: {integrity: sha512-3hN7NaskYvMDLQY55gnW3NQ+mesEAepTqlg+VEbj7zzqEMBVNhzcGYYeqFo/TlYz6eQiFcp1HcsCZO+nGgS8zg==}
