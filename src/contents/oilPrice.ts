@@ -1,6 +1,6 @@
 import type { PlasmoCSConfig } from "plasmo"
 
-import { getStyleFromTier, getTierFromPercent } from "~helpers/tiers"
+import { getStyleFromTier, getTierFromPercent } from "~helpers/utils"
 
 export const config: PlasmoCSConfig = {
   matches: ["https://*.airline-club.com/*"],

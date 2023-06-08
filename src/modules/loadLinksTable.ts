@@ -1,7 +1,6 @@
-import { fetchData } from "~/apiService"
-import { populateDerivedFieldsOnLink } from "~/helpers/utils"
-import { updateCustomLinkTableHeader } from "~/modules/updateCustomLinkTableHeader"
+import { populateDerivedFieldsOnLink, updateCustomLinkTableHeader } from "~/helpers/tables"
 import { updateLinksTable } from "~/modules/updateLinksTable"
+import { fetchData } from "~helpers/apiService"
 
 export async function loadLinksTable(): Promise<void> {
   try {
