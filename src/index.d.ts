@@ -17,8 +17,11 @@ interface Link {
   assignedAirplanes?: AssignedAirplane[]
   capacity?: Capacity
   capacityHistory?: Capacity
+  distance?: number
   duration?: number
   frequency?: number
+  fromAirportCity?: string
+  fromAirportCode?: string
   model?: string
   passengers?: Capacity
   profit?: number
@@ -28,6 +31,11 @@ interface Link {
   profitPerFlight?: number
   profitPerHour?: number
   revenue?: number
+  satisfaction?: number
+  tiers?: { [key: string]: any }
+  tiersRank?: number
+  toAirportCity?: string
+  toAirportCode?: string
   totalCapacity?: number
   totalCapacityHistory?: number
   totalPassengers?: number
