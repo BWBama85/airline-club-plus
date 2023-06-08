@@ -1,4 +1,4 @@
-import { fetchData } from "./apiService"
+import { fetchData } from "~/helpers/apiService"
 
 export interface OilData {
   cycle: number
