@@ -9,12 +9,19 @@ export const config: PlasmoCSConfig = {
 
 function _updateLatestOilPriceInHeader(latestPrice: number) {
   const shortcutElement = document.querySelector(".topBarDetails .latestOilPriceShortCut")
-  const delegatesShortcutElement = document.querySelector(".topBarDetails .delegatesShortcut")
+  const mobileOnlyElement = document.querySelector(".mobileOnly")
+  const delegatesShortcutElement = document.querySelector(".desktopOnly .topBarDetails .delegatesShortcut")
+  const delegatesShortcutElementMobile = document.querySelector(".mobileOnly .topBarDetails .delegatesShortcut")
+
+  mobileOnlyElement?.removeAttribute("style")
+  mobileOnlyElement?.setAttribute("style", "width: 40%")
 
   if (!shortcutElement) {
     const shortcutSpan = document.createElement("span")
-    shortcutSpan.style.margin = "0px 10px"
+    shortcutSpan.style.margin = "0px 0px 0px 5px"
     shortcutSpan.style.padding = "0 5px"
+    shortcutSpan.style.position = "relative"
+    shortcutSpan.style.display = "inline-block"
     shortcutSpan.title = "Latest Oil Price"
     shortcutSpan.className = "latestOilPriceShortCut clickable"
 
@@ -25,6 +32,7 @@ function _updateLatestOilPriceInHeader(latestPrice: number) {
     shortcutSpan.appendChild(latestPriceSpan)
 
     delegatesShortcutElement.after(shortcutSpan)
+    delegatesShortcutElementMobile.after(shortcutSpan)
   }
 
   const tierForPrice = 5 - getTierFromPercent(latestPrice, 40, 80)
