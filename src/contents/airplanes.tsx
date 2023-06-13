@@ -3,7 +3,7 @@ import type { FC } from "react"
 import { createRoot } from "react-dom/client"
 
 export const config: PlasmoCSConfig = {
-  matches: ["https://www.plasmo.com/*"]
+  matches: ["https://*.airline-club.com/*"]
 }
 
 export const getRootContainer = () =>
