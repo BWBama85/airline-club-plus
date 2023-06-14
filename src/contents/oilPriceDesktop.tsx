@@ -13,7 +13,6 @@ export const getRootContainer = () =>
       const desktopContainerParent = document.querySelector(
         "div.desktopOnly span.topBarDetails span.delegatesShortcut.clickable"
       )
-      console.log(desktopContainerParent)
       if (desktopContainerParent) {
         clearInterval(checkInterval)
         const desktopRootContainer = document.createElement("span")
