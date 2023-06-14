@@ -59,3 +59,8 @@ interface Capacity {
   business: number
   first: number
 }
+
+interface OilData {
+  cycle: number
+  price: number
+}
