@@ -1,9 +1,6 @@
-import { fetchData } from "~/helpers/apiService"
+import { Storage } from "@plasmohq/storage"
 
-export interface OilData {
-  cycle: number
-  price: number
-}
+import { fetchData } from "~/helpers/apiService"
 
 interface Config {
   apiUrl: string
@@ -19,7 +16,7 @@ const config: Config = {
   priceThreshold: 60
 }
 
-let oilData: OilData[] = []
+const storage = new Storage()
 
 chrome.alarms.create("checkOilPrice", {
   periodInMinutes: config.intervalInMinutes
@@ -34,8 +31,8 @@ chrome.alarms.onAlarm.addListener((alarm: chrome.alarms.Alarm) => {
 })
 
 async function initializeData(): Promise<void> {
-  oilData = await fetchLatestOilData()
-  saveToLocalStorage(oilData)
+  const oilData: OilData[] = await fetchLatestOilData()
+  await storage.set("oilData", oilData)
 }
 
 async function fetchLatestOilData(): Promise<OilData[]> {
@@ -43,37 +40,24 @@ async function fetchLatestOilData(): Promise<OilData[]> {
   return fetchedData.slice(-config.numCyclesToTrack)
 }
 
-function saveToLocalStorage(data: OilData[]): void {
-  chrome.storage.local.set({ oilData: data }, function () {
-    var error = chrome.runtime.lastError
-    if (error) {
-      console.error(error)
-    }
-  })
-}
-
 async function updateOilData(): Promise<void> {
-  chrome.storage.local.get("oilData", async (data) => {
-    if (data.oilData) {
-      oilData = data.oilData
+  let oilData: OilData[] = (await storage.get("oilData")) || []
+  const fetchedData = await fetchData(config.apiUrl)
+  const latestEntry: OilData = fetchedData[fetchedData.length - 1]
+  const isPresentInStorage = oilData.some((data: OilData) => data.cycle === latestEntry.cycle)
+  if (!isPresentInStorage) {
+    oilData.push(latestEntry)
+    if (oilData.length > config.numCyclesToTrack) {
+      oilData.shift()
     }
-    const fetchedData = await fetchData(config.apiUrl)
-    const latestEntry: OilData = fetchedData[fetchedData.length - 1]
-    const isPresentInStorage = oilData.some((data: OilData) => data.cycle === latestEntry.cycle)
-    if (!isPresentInStorage) {
-      oilData.push(latestEntry)
-      if (oilData.length > config.numCyclesToTrack) {
-        oilData.shift()
-      }
-      saveToLocalStorage(oilData)
-      if (shouldNotify()) {
-        sendNotification()
-      }
+    await storage.set("oilData", oilData)
+    if (shouldNotify(oilData)) {
+      sendNotification()
     }
-  })
+  }
 }
 
-function shouldNotify(): boolean {
+function shouldNotify(oilData: OilData[]): boolean {
   return oilData[oilData.length - 1].price < config.priceThreshold
 }
 
