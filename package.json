@@ -1,7 +1,7 @@
 {
   "name": "airline-club-plus",
   "displayName": "Airline Club Plus",
-  "version": "1.1.5",
+  "version": "1.2.0",
   "description": "Improves the Airline-Club.com game experience.",
   "author": "Brent Wilson <brent@thewilsonnet.com>",
   "scripts": {
@@ -10,6 +10,7 @@
     "package": "plasmo package"
   },
   "dependencies": {
+    "@plasmohq/storage": "^1.6.1",
     "plasmo": "0.75.3",
     "react": "18.2.0",
     "react-dom": "18.2.0"

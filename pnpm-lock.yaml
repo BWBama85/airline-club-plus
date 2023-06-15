@@ -5,6 +5,9 @@ settings:
   excludeLinksFromLockfile: false
 
 dependencies:
+  '@plasmohq/storage':
+    specifier: ^1.6.1
+    version: 1.6.1(react@18.2.0)
   plasmo:
     specifier: 0.75.3
     version: 0.75.3(react-dom@18.2.0)(react@18.2.0)
@@ -2095,6 +2098,18 @@ packages:
     transitivePeerDependencies:
       - supports-color
     dev: true
+
+  /@plasmohq/storage@1.6.1(react@18.2.0):
+    resolution: {integrity: sha512-FgykO3m5YhOBA/xANpsLTGGKkBD1uVmymnG7aMck4BS962Tz+bDv476NFVoSrOtduadBpRFTsBAsyXUMdY8YKA==}
+    peerDependencies:
+      react: ^16.8.6 || ^17 || ^18
+    peerDependenciesMeta:
+      react:
+        optional: true
+    dependencies:
+      pify: 6.1.0
+      react: 18.2.0
+    dev: false
 
   /@pnpm/config.env-replace@1.1.0:
     resolution:
@@ -4671,6 +4686,11 @@ packages:
     engines: { node: ">=6" }
     dev: false
     optional: true
+
+  /pify@6.1.0:
+    resolution: {integrity: sha512-KocF8ve28eFjjuBKKGvzOBGzG8ew2OqOOSxTTZhirkzH7h3BI1vyzqlR0qbfcDBve1Yzo3FVlWUAtCRrbVN8Fw==}
+    engines: {node: '>=14.16'}
+    dev: false
 
   /pirates@4.0.5:
     resolution:

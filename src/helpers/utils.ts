@@ -1,13 +1,13 @@
-export function getStyleFromTier(tier: number): string {
-  const stylesFromGoodToBad: Array<string> = [
-    "color:#29FF66;",
-    "color:#5AB874;",
-    "color:inherit;",
-    "color:#FA8282;",
-    "color:#FF6969;",
-    "color:#FF3D3D;font-weight: bold;"
+export function getStyleFromTier(tier: number): { color: string; fontWeight?: string } {
+  const stylesFromGoodToBad: Array<{ color: string; fontWeight?: string }> = [
+    { color: "#29FF66" },
+    { color: "#5AB874" },
+    { color: "inherit" },
+    { color: "#FA8282" },
+    { color: "#FF6969" },
+    { color: "#FF3D3D", fontWeight: "bold" }
   ]
-  return stylesFromGoodToBad[tier] || "color:inherit"
+  return stylesFromGoodToBad[tier] || { color: "inherit" }
 }
 
 export function getTierFromPercent(val: number, min = 0, max = 100): number {
