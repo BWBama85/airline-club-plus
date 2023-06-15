@@ -20,6 +20,7 @@ export const getRootContainer = () =>
       if (mobileContainerParent) {
         clearInterval(checkIntervalMobile)
         const mobileRootContainer = document.createElement("span")
+        mobileRootContainer.setAttribute("onclick", "showOilCanvas()")
         mobileContainerParent.after(mobileRootContainer)
         resolve(mobileRootContainer)
       }

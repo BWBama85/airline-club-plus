@@ -16,6 +16,7 @@ export const getRootContainer = () =>
       if (desktopContainerParent) {
         clearInterval(checkInterval)
         const desktopRootContainer = document.createElement("span")
+        desktopRootContainer.setAttribute("onclick", "showOilCanvas()")
         desktopContainerParent.after(desktopRootContainer)
         resolve(desktopRootContainer)
       }
