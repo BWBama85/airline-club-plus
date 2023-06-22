@@ -1,4 +1,4 @@
-import { NUMBER_FORMAT } from "./constants"
+import { NUMBER_FORMAT } from "./utils"
 
 export function updateCustomLinkTableHeader(): void {
   const linksTableSortHeader = window.document.getElementById("linksTableSortHeader")

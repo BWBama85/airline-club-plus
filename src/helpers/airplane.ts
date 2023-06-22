@@ -91,3 +91,43 @@ export function setupNewDataFilterElements(): void {
     }
   })
 }
+
+export const isModelOwned = (modelOwnerInfo: any) =>
+  modelOwnerInfo.assignedAirplanes.length +
+    modelOwnerInfo.availableAirplanes.length +
+    modelOwnerInfo.constructingAirplanes.length !==
+  0
+
+export const isValidModel = (modelOwnerInfo: any, min_capacity: number, min_circulation: number) =>
+  modelOwnerInfo.cpp !== -1 && modelOwnerInfo.max_capacity >= min_capacity && modelOwnerInfo.in_use >= min_circulation
+
+export const populateTableCells = (row: HTMLElement, cells: string[]) => {
+  cells.forEach((content) => {
+    const cell = document.createElement("div")
+    cell.className = "cell"
+    cell.innerHTML = content
+    row.appendChild(cell)
+  })
+}
+
+export const calculateUtilisation = (flightDuration: number, turnaroundTime: number) => {
+  const MAX_FLIGHT_MINUTES = 4 * 24 * 60
+  const frequency = Math.floor(MAX_FLIGHT_MINUTES / ((flightDuration + turnaroundTime) * 2))
+  const flightTime = frequency * 2 * (flightDuration + turnaroundTime)
+  const availableFlightMinutes = MAX_FLIGHT_MINUTES - flightTime
+  const utilisation = flightTime / (MAX_FLIGHT_MINUTES - availableFlightMinutes)
+  const planeUtilisation = (MAX_FLIGHT_MINUTES - availableFlightMinutes) / MAX_FLIGHT_MINUTES
+  return { utilisation, planeUtilisation, frequency }
+}
+
+export const calculateCosts = (plane: any, flightDuration: number, plane_category: number, utilisation: number) => {
+  const decayRate = (100 / (plane.lifespan * 3)) * (1 + 2 * utilisation)
+  const depreciationRate = Math.floor(plane.price * (decayRate / 100) * utilisation)
+  const maintenance = plane.capacity * 100 * utilisation
+
+  const airport_fee = (500 * plane_category + plane.capacity * 10) * 2
+  const crew_cost = plane.capacity * (flightDuration / 60) * 12
+  const inflight_cost = (20 + (8 * flightDuration) / 60) * plane.capacity * 2
+
+  return { depreciationRate, maintenance, airport_fee, crew_cost, inflight_cost }
+}
