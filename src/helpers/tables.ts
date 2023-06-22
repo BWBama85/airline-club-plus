@@ -1,3 +1,5 @@
+import { NUMBER_FORMAT } from "./constants"
+
 export function updateCustomLinkTableHeader(): void {
   const linksTableSortHeader = window.document.getElementById("linksTableSortHeader")
   if (linksTableSortHeader && linksTableSortHeader.children.length === 15) {
@@ -174,4 +176,35 @@ export function getShortModelName(airplaneName: string): string {
       str.includes("-") || str.length < 4 || /^[A-Z0-9\-]+[a-z]{0,4}$/.test(str) ? str : str[0].toUpperCase()
     )
     .join(" ")
+}
+
+export function createRowElement(modelOwnerInfo, isOwned: boolean) {
+  const row = document.createElement("div")
+  row.className = "table-row clickable"
+  row.setAttribute("data-model-id", modelOwnerInfo.id)
+  row.style.background = isOwned ? "#465b65" : ""
+  row.onclick = () => window.selectAirplaneModel(window.loadedModelsById[modelOwnerInfo.id])
+  return row
+}
+
+export function createCellContents(modelOwnerInfo) {
+  let cellContent = modelOwnerInfo.isFavorite
+    ? `${modelOwnerInfo.name}<img src='assets/images/icons/heart.png' height='10px'>`
+    : modelOwnerInfo.name
+
+  return [
+    cellContent,
+    modelOwnerInfo.family,
+    `$${NUMBER_FORMAT.format(modelOwnerInfo.price)}`,
+    `${modelOwnerInfo.capacity} (${modelOwnerInfo.capacity * modelOwnerInfo.max_rotation})`,
+    `${modelOwnerInfo.range} km`,
+    modelOwnerInfo.fuelBurn,
+    `${modelOwnerInfo.lifespan / 52} yrs`,
+    `${modelOwnerInfo.speed} km/h`,
+    `${modelOwnerInfo.runwayRequirement} m`,
+    `${modelOwnerInfo.assignedAirplanes.length}/${modelOwnerInfo.availableAirplanes.length}/${modelOwnerInfo.constructingAirplanes.length}`,
+    modelOwnerInfo.max_rotation,
+    `$${NUMBER_FORMAT.format(Math.round(modelOwnerInfo.cpp))}`,
+    modelOwnerInfo.in_use
+  ]
 }
