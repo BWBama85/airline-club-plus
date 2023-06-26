@@ -46,8 +46,8 @@ window.addEventListener("DOMContentLoaded", async () => {
       JUMBO: 18,
       SUPERSONIC: 12
     }
-
-    for (let plane of Object.values(window.loadedModelsOwnerInfo)) {
+    let plane: Plane
+    for (plane of Object.values(window.loadedModelsOwnerInfo)) {
       if (plane.range < distance || plane.runwayRequirement > runway) {
         plane.cpp = -1
         plane.max_rotation = -1
@@ -76,7 +76,7 @@ window.addEventListener("DOMContentLoaded", async () => {
       plane.cpp = plane.fuel_total / (plane.capacity * plane.max_rotation)
       plane.max_capacity = plane.capacity * plane.max_rotation
 
-      if (!plane.in_use) {
+      if (plane.in_use === undefined) {
         plane.in_use = -1
         await window.loadAirplaneModelStats(plane, { totalOnly: true })
       }
@@ -92,12 +92,18 @@ window.addEventListener("DOMContentLoaded", async () => {
       }
       sortOrder = selectedSortHeader.getAttribute("data-sort-order")
     }
+
     //sort the list
     window.loadedModelsOwnerInfo.sort(sortByProperty(sortProperty, sortOrder == "ascending"))
 
+    var childElements = airplaneModelTable.querySelectorAll("div.table-row")
+
+    childElements.forEach(function (child) {
+      airplaneModelTable.removeChild(child)
+    })
+
     for (let modelOwnerInfo of Object.values(window.loadedModelsOwnerInfo)) {
       modelOwnerInfo.in_use = modelOwnerInfo.in_use || 0
-      console.dir(modelOwnerInfo)
 
       const isOwned = isModelOwned(modelOwnerInfo)
 
