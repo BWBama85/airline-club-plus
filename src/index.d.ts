@@ -17,32 +17,10 @@ interface Window {
   activeAirline?: ActiveAirline
   link: Link
   loadedLinks: Link[]
-  loadedModelsOwnerInfo: { [key: string]: any }
+  loadedModelsOwnerInfo: Plane[]
   selectedLink: number
   selectedModelId: number
-  loadedModelsById: { [key: string]: IPlane }
-}
-
-interface IPlane {
-  id?: string
-  airplaneType: string
-  range?: number
-  runwayRequirement?: number
-  cpp?: number
-  max_rotation?: number
-  price?: number
-  originalPrice?: number
-  turnaroundTime?: number
-  capacity?: number
-  lifespan?: number
-  fuel_total?: number
-  fbpf?: number
-  fbpp?: number
-  fbpw?: number
-  max_capacity?: number
-  in_use?: number
-  speed?: number
-  fuelBurn?: number
+  loadedModelsById: { [key: string]: Plane }
 }
 
 interface Link {
@@ -75,8 +53,42 @@ interface Link {
   totalLoadFactor?: number
 }
 
-// q: Explain to me what the ModelInfo interface below is doing in detail
-// a: This is a type declaration for the ModelInfo object. It is saying that the ModelInfo object has two properties, id and isFavorite,
+interface Plane {
+  runwayRequirement: number
+  originalPrice: number
+  airplaneType: string
+  lifespan: number
+  range: number
+  rejection: string
+  speed: number
+  manufacturer: string
+  capacity: number
+  badConditionThreshold: number
+  originalConstructionTime: number
+  discounts: Discounts
+  countryCode: string
+  price: number
+  constructionTime: number
+  imageUrl: string
+  name: string
+  criticalConditionThreshold: number
+  fuelBurn: number
+  id: number
+  family: string
+  turnaroundTime: number
+  assignedAirplanes: any[] // Replace 'any' with the correct type if known
+  availableAirplanes: any[] // Replace 'any' with the correct type if known
+  constructingAirplanes: any[] // Replace 'any' with the correct type if known
+  totalOwned: number
+  max_rotation: number
+  fbpf: number
+  fbpp: number
+  fbpw: number
+  fuel_total: number
+  cpp: number
+  max_capacity: number
+  in_use: number | undefined | null
+}
 
 interface ModelInfo {
   id: number
@@ -112,4 +124,14 @@ interface OilData {
 
 type SortableObject = {
   [key: string]: any
+}
+
+interface Discount {
+  discountDescription: string
+  discountPercentage: number
+}
+
+interface Discounts {
+  construction_time: Discount[]
+  price: Discount[]
 }
