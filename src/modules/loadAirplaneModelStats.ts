@@ -1,10 +1,38 @@
 import { fetchData } from "~helpers/apiService"
 
-export async function loadAirplaneModelStats(modelInfo, opts?) {
-  let cachedTotalsById = {}
+class Cache {
+  private cache: { [key: string]: any } = {}
+
+  set(key: string, value: any): void {
+    this.cache[key] = value
+  }
+
+  get(key: string): any {
+    return this.cache[key]
+  }
+
+  has(key: string): boolean {
+    return this.cache.hasOwnProperty(key)
+  }
+}
+
+const cachedTotalsById = new Cache()
+
+export async function loadAirplaneModelStats(modelInfo: ModelInfo, opts: Opts = { totalOnly: false }) {
   let favoriteIcon = document.querySelector("#airplaneModelDetail .favorite") as HTMLImageElement
   let model = window.loadedModelsById[modelInfo.id]
   let url: string
+
+  if (opts.totalOnly && model.in_use && model.in_use !== -1) {
+    console.log("opts.totalOnly && model.in_use && model.in_use !== -1")
+    return
+  }
+
+  if (opts.totalOnly && cachedTotalsById.has(model.id.toString())) {
+    model.in_use = cachedTotalsById.get(model.id.toString())
+    console.log("opts.totalOnly && cachedTotalsById[model.id]")
+    return
+  }
 
   if (window.activeAirline) {
     url = `airlines/${window.activeAirline.id}/airplanes/model/${model.id}/stats`
@@ -14,29 +42,20 @@ export async function loadAirplaneModelStats(modelInfo, opts?) {
     favoriteIcon.style.display = "none"
   }
 
-  if (opts.totalOnly && model.in_use && model.in_use !== -1) {
-    // console.log("opts.totalOnly && model.in_use && model.in_use !== -1")
-    return
-  }
-
-  if (opts.totalOnly && cachedTotalsById[model.id]) {
-    model.in_use = cachedTotalsById[model.id]
-    // console.log("opts.totalOnly && cachedTotalsById[model.id]")
-    return
-  }
-
   const stats = await fetchData(url)
-  // console.log("Stats.Total: ", stats.total)
+
   if (opts.totalOnly) {
-    cachedTotalsById[model.id] = model.in_use = stats.total
-    // console.log("opts.totalOnly")
+    cachedTotalsById.set(model.id.toString(), stats.total)
+    model.in_use = stats.total
+    console.log("opts.totalOnly")
     return
   }
 
   window.updateTopOperatorsTable(stats)
   ;(document.querySelector("#airplaneCanvas .total") as HTMLElement).textContent = stats.total
 
-  cachedTotalsById[model.id] = model.in_use = stats.total
+  cachedTotalsById.set(model.id.toString(), stats.total)
+  model.in_use = stats.total
 
   if (stats.favorite === undefined) {
     return
