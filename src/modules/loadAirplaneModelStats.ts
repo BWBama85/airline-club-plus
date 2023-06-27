@@ -42,7 +42,7 @@ export async function loadAirplaneModelStats(modelInfo: ModelInfo, opts: Opts = 
     favoriteIcon.style.display = "none"
   }
 
-  const stats = await fetchData(url)
+  const stats: Stats = await fetchData(url)
 
   if (opts.totalOnly) {
     cachedTotalsById.set(model.id.toString(), stats.total)
@@ -52,7 +52,7 @@ export async function loadAirplaneModelStats(modelInfo: ModelInfo, opts: Opts = 
   }
 
   window.updateTopOperatorsTable(stats)
-  ;(document.querySelector("#airplaneCanvas .total") as HTMLElement).textContent = stats.total
+  ;(document.querySelector("#airplaneCanvas .total") as HTMLElement).textContent = stats.total.toString()
 
   cachedTotalsById.set(model.id.toString(), stats.total)
   model.in_use = stats.total

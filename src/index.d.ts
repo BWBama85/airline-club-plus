@@ -2,12 +2,12 @@ interface Window {
   $: JQueryStatic
   getAirportText: (city: string, code: string) => string
   loadLinksTable: () => Promise<void>
-  updateTopOperatorsTable: (stats: any) => void
+  updateTopOperatorsTable: (stats: Stats) => void
   refreshLinkDetails: (LinkId: number) => Promise<void>
   sortPreserveOrder: (links: Link[], sortProperty: string, ascending: boolean) => Link[]
   toggleLinksTableSortOrder: (sortHeader: HTMLElement) => void
   updateLoadedLinks: (links: Link[]) => void
-  selectAirplaneModel: (modelInfo) => void
+  selectAirplaneModel: (modelInfo: Plane) => void
   loadAirplaneModelStats: (modelInfo: ModelInfo, opts?: Opts) => Promise<void>
   updateAirplaneModelTable: (sortProperty: string, sortOrder: string) => void
   toggleAirplaneModelTableSortOrder: (sortHeader: HTMLElement) => void
@@ -90,6 +90,21 @@ interface Plane {
   in_use: number | undefined | null
 }
 
+interface Stats {
+  total: number
+  topAirlines: TopAirlines[]
+  favorite: Favorite
+}
+
+interface TopAirlines {
+  airline: Airline
+  airplaneCount: number
+}
+
+interface Favorite {
+  rejection: string
+}
+
 interface ModelInfo {
   id: number
   isFavorite?: boolean
@@ -134,4 +149,16 @@ interface Discount {
 interface Discounts {
   construction_time: Discount[]
   price: Discount[]
+}
+
+interface Airline {
+  baseCount: number
+  gradeValue: number
+  isGenerated: boolean
+  countryCode: string
+  gradeDescription: string
+  name: string
+  reputation: number
+  airlineCode: string
+  id: number
 }
