@@ -29,7 +29,7 @@ export function addInputCells(): void {
     minCapacityDiv.innerHTML = 'Min. Capacity: <input type="text" id="min_capacity" value="0" />'
     minCirculationDiv.innerHTML = 'Min. Circulation: <input type="text" id="min_circulation" value="0" />'
     selectionDiv.innerHTML = `
-    <label for="use_flight_total">Flight Fuel Total <input type="checkbox" id="use_flight_total" /></label>
+    <label for="fuel_total">Flight Fuel Total <input type="checkbox" id="fuel_total" /></label>
     `
     mainPanel.appendChild(distanceDiv)
     mainPanel.appendChild(runwayDiv)
@@ -82,13 +82,7 @@ export function addTableHeaderCells(): void {
 }
 
 export function setupNewDataFilterElements(): void {
-  const newDataFilterElements: string[] = [
-    "#fightRange",
-    "#runway",
-    "#min_capacity",
-    "#min_circulation",
-    "#use_flight_total"
-  ]
+  const newDataFilterElements: string[] = ["#fightRange", "#runway", "#min_capacity", "#min_circulation", "#fuel_total"]
 
   const elementRefs = newDataFilterElements.map((id) => document.querySelector(id))
 

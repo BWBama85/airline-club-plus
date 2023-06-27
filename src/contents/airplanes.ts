@@ -31,7 +31,7 @@ window.addEventListener("DOMContentLoaded", async () => {
     const runway = Number((document.getElementById("runway") as HTMLInputElement).value)
     const min_capacity = Number((document.getElementById("min_capacity") as HTMLInputElement).value)
     const min_circulation = Number((document.getElementById("min_circulation") as HTMLInputElement).value)
-    const use_flight_total = (document.getElementById("use_flight_total") as HTMLInputElement).checked
+    const use_flight_total = (document.getElementById("fuel_total") as HTMLInputElement).checked
     const airplaneModelTable = document.getElementById("airplaneModelTable")
 
     const airplaneTypeMap = {
@@ -74,6 +74,11 @@ window.addEventListener("DOMContentLoaded", async () => {
         maintenance
       plane.cpp = plane.fuel_total / (plane.capacity * plane.max_rotation)
       plane.max_capacity = plane.capacity * plane.max_rotation
+      plane.fuel_total_info =
+        "Total Frequency Cost: $" +
+        new Intl.NumberFormat("en-US").format(Math.round(plane.fuel_total)) +
+        " / Per Flight: $" +
+        new Intl.NumberFormat("en-US").format(Math.round(plane.cpp * plane.capacity))
 
       if (plane.in_use === undefined) {
         plane.in_use = -1
@@ -100,9 +105,10 @@ window.addEventListener("DOMContentLoaded", async () => {
       }
       sortOrder = selectedSortHeader.getAttribute("data-sort-order")
     }
-
+    console.log(sortProperty, sortOrder)
     //sort the list
     window.loadedModelsOwnerInfo.sort(sortByProperty(sortProperty, sortOrder == "ascending"))
+    console.log(sortProperty, sortOrder)
 
     var childElements = airplaneModelTable.querySelectorAll("div.table-row")
 
@@ -123,7 +129,7 @@ window.addEventListener("DOMContentLoaded", async () => {
       const row = createRowElement(modelOwnerInfo, isOwned)
       const cells = createCellContents(modelOwnerInfo)
 
-      populateTableCells(row, cells)
+      populateTableCells(row, cells, modelOwnerInfo.fuel_total_info)
 
       airplaneModelTable.appendChild(row)
     }
