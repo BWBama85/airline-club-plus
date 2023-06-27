@@ -1,13 +1,13 @@
 import { fetchData } from "~helpers/apiService"
 
 class Cache {
-  private cache: { [key: string]: any } = {}
+  private cache: { [key: string]: number } = {}
 
-  set(key: string, value: any): void {
+  set(key: string, value: number): void {
     this.cache[key] = value
   }
 
-  get(key: string): any {
+  get(key: string): number {
     return this.cache[key]
   }
 
@@ -18,7 +18,7 @@ class Cache {
 
 const cachedTotalsById = new Cache()
 
-export async function loadAirplaneModelStats(modelInfo: ModelInfo, opts: Opts = { totalOnly: false }) {
+export async function loadAirplaneModelStats(modelInfo: Plane, opts: Opts = { totalOnly: false }) {
   let favoriteIcon = document.querySelector("#airplaneModelDetail .favorite") as HTMLImageElement
   let model = window.loadedModelsById[modelInfo.id]
   let url: string
