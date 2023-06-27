@@ -7,10 +7,9 @@ import {
   calculateUtilisation,
   isModelOwned,
   isValidModel,
-  populateTableCells,
   setupNewDataFilterElements
 } from "~/helpers/airplane"
-import { createCellContents, createRowElement } from "~/helpers/tables"
+import { createCellContents, createRowElement, populateTableCells } from "~/helpers/tables"
 import { calcFlightTime, calcFuelBurn, sortByProperty } from "~/helpers/utils"
 import { loadAirplaneModelStats } from "~/modules/loadAirplaneModelStats"
 
@@ -102,7 +101,8 @@ window.addEventListener("DOMContentLoaded", async () => {
       airplaneModelTable.removeChild(child)
     })
 
-    for (let modelOwnerInfo of Object.values(window.loadedModelsOwnerInfo)) {
+    let modelOwnerInfo: Plane
+    for (modelOwnerInfo of Object.values(window.loadedModelsOwnerInfo)) {
       modelOwnerInfo.in_use = modelOwnerInfo.in_use || 0
 
       const isOwned = isModelOwned(modelOwnerInfo)

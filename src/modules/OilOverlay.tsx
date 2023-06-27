@@ -6,6 +6,11 @@ import { Storage } from "@plasmohq/storage"
 
 import { getStyleFromTier, getTierFromPercent } from "~helpers/utils"
 
+interface OilData {
+  cycle: number
+  price: number
+}
+
 const storage = new Storage()
 
 const OilOverlay: FC<PlasmoCSUIProps> = () => {

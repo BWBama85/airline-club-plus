@@ -178,16 +178,16 @@ export function getShortModelName(airplaneName: string): string {
     .join(" ")
 }
 
-export function createRowElement(modelOwnerInfo, isOwned: boolean) {
+export function createRowElement(modelOwnerInfo: Plane, isOwned: boolean) {
   const row = document.createElement("div")
   row.className = "table-row clickable"
-  row.setAttribute("data-model-id", modelOwnerInfo.id)
+  row.setAttribute("data-model-id", modelOwnerInfo.id.toString())
   row.style.background = isOwned ? "#465b65" : ""
   row.onclick = () => window.selectAirplaneModel(window.loadedModelsById[modelOwnerInfo.id])
   return row
 }
 
-export function createCellContents(modelOwnerInfo) {
+export function createCellContents(modelOwnerInfo: Plane): string[] {
   let cellContent = modelOwnerInfo.isFavorite
     ? `${modelOwnerInfo.name}<img src='assets/images/icons/heart.png' height='10px'>`
     : modelOwnerInfo.name
@@ -198,13 +198,22 @@ export function createCellContents(modelOwnerInfo) {
     `$${NUMBER_FORMAT.format(modelOwnerInfo.price)}`,
     `${modelOwnerInfo.capacity} (${modelOwnerInfo.capacity * modelOwnerInfo.max_rotation})`,
     `${modelOwnerInfo.range} km`,
-    modelOwnerInfo.fuelBurn,
+    modelOwnerInfo.fuelBurn.toString(),
     `${modelOwnerInfo.lifespan / 52} yrs`,
     `${modelOwnerInfo.speed} km/h`,
     `${modelOwnerInfo.runwayRequirement} m`,
     `${modelOwnerInfo.assignedAirplanes.length}/${modelOwnerInfo.availableAirplanes.length}/${modelOwnerInfo.constructingAirplanes.length}`,
-    modelOwnerInfo.max_rotation,
+    modelOwnerInfo.max_rotation.toString(),
     `$${NUMBER_FORMAT.format(Math.round(modelOwnerInfo.cpp))}`,
-    modelOwnerInfo.in_use
+    modelOwnerInfo.in_use.toString()
   ]
+}
+
+export const populateTableCells = (row: HTMLElement, cells: string[]) => {
+  cells.forEach((content) => {
+    const cell = document.createElement("div")
+    cell.className = "cell"
+    cell.innerHTML = content
+    row.appendChild(cell)
+  })
 }

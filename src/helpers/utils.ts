@@ -1,5 +1,9 @@
 export const NUMBER_FORMAT = new Intl.NumberFormat("en-US")
 
+type SortableObject = {
+  [key: string]: any
+}
+
 export function getStyleFromTier(tier: number): { color: string; fontWeight?: string } {
   const stylesFromGoodToBad: Array<{ color: string; fontWeight?: string }> = [
     { color: "#29FF66" },
