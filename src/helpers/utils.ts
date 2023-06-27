@@ -43,7 +43,7 @@ export function sortByProperty(
   }
 }
 
-export function calcFlightTime(plane: IPlane, distance: number): number {
+export function calcFlightTime(plane: Plane, distance: number): number {
   const SUPERSONIC = "SUPERSONIC"
   const SPEED_FACTORS = [350, 500, 700]
   let speedFactor = plane.airplaneType.toUpperCase() === SUPERSONIC ? 1.5 : 1
@@ -61,7 +61,7 @@ export function calcFlightTime(plane: IPlane, distance: number): number {
   return timeFlight * 60
 }
 
-export function calcFuelBurn(plane: IPlane, distance: number): number {
+export function calcFuelBurn(plane: Plane, distance: number): number {
   let timeFlight = calcFlightTime(plane, distance) / 60 // convert it back to hours
   let fuelBurn = plane.fuelBurn
 
