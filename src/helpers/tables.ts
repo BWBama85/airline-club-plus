@@ -209,11 +209,14 @@ export function createCellContents(modelOwnerInfo: Plane): string[] {
   ]
 }
 
-export const populateTableCells = (row: HTMLElement, cells: string[]) => {
-  cells.forEach((content) => {
+export const populateTableCells = (row: HTMLElement, cells: string[], title: string) => {
+  cells.forEach((content, index) => {
     const cell = document.createElement("div")
     cell.className = "cell"
     cell.innerHTML = content
+    if (index === 11) {
+      cell.setAttribute("title", title)
+    }
     row.appendChild(cell)
   })
 }

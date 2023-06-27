@@ -23,6 +23,7 @@ interface Plane {
   fbpw: number
   fuelBurn: number
   fuel_total: number
+  fuel_total_info: string
   homeAirportId: number
   imageUrl: string
   in_use: number | undefined | null
