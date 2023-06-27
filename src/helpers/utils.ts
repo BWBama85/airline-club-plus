@@ -75,3 +75,13 @@ export function calcFuelBurn(plane: Plane, distance: number): number {
     return fuelBurn * timeFlight * 5.5
   }
 }
+
+export function createLoadingElement(): HTMLDivElement {
+  const loadingElement = document.createElement("div")
+  loadingElement.id = "loading-element"
+  loadingElement.style.margin = "0 auto"
+  loadingElement.style.textAlign = "center"
+  loadingElement.textContent =
+    "Please wait, loading all the airplane models. This takes a few seconds on the first load."
+  return loadingElement
+}
