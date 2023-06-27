@@ -24,13 +24,11 @@ export async function loadAirplaneModelStats(modelInfo: Plane, opts: Opts = { to
   let url: string
 
   if (opts.totalOnly && model.in_use && model.in_use !== -1) {
-    console.log("opts.totalOnly && model.in_use && model.in_use !== -1")
     return
   }
 
   if (opts.totalOnly && cachedTotalsById.has(model.id.toString())) {
     model.in_use = cachedTotalsById.get(model.id.toString())
-    console.log("opts.totalOnly && cachedTotalsById[model.id]")
     return
   }
 
@@ -47,7 +45,6 @@ export async function loadAirplaneModelStats(modelInfo: Plane, opts: Opts = { to
   if (opts.totalOnly) {
     cachedTotalsById.set(model.id.toString(), stats.total)
     model.in_use = stats.total
-    console.log("opts.totalOnly")
     return
   }
 
