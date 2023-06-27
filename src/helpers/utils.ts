@@ -1,3 +1,5 @@
+export const NUMBER_FORMAT = new Intl.NumberFormat("en-US")
+
 export function getStyleFromTier(tier: number): { color: string; fontWeight?: string } {
   const stylesFromGoodToBad: Array<{ color: string; fontWeight?: string }> = [
     { color: "#29FF66" },
@@ -21,4 +23,51 @@ export function getTierFromPercent(val: number, min = 0, max = 100): number {
   }
 
   return 5
+}
+
+export function sortByProperty(
+  property: string,
+  ascending: boolean = true
+): (a: SortableObject, b: SortableObject) => number {
+  const sortOrder = ascending ? 1 : -1
+
+  return function (a: SortableObject, b: SortableObject): number {
+    let aVal = a[property]
+    let bVal = b[property]
+    if (Array.isArray(aVal) && Array.isArray(bVal)) {
+      aVal = aVal.length
+      bVal = bVal.length
+    }
+    const result = aVal < bVal ? -1 : aVal > bVal ? 1 : 0
+    return result * sortOrder
+  }
+}
+
+export function calcFlightTime(plane: Plane, distance: number): number {
+  const SUPERSONIC = "SUPERSONIC"
+  const SPEED_FACTORS = [350, 500, 700]
+  let speedFactor = plane.airplaneType.toUpperCase() === SUPERSONIC ? 1.5 : 1
+  let speed = plane.speed * speedFactor
+
+  let flightDistances = [300, 400, 400].map((dist, index) => {
+    let distA = Math.min(distance, dist)
+    distance = Math.max(0, distance - distA)
+    return distA / Math.min(speed, SPEED_FACTORS[index])
+  })
+
+  flightDistances.push(Math.max(0, distance) / speed)
+  let timeFlight = flightDistances.reduce((a, b) => a + b)
+
+  return timeFlight * 60
+}
+
+export function calcFuelBurn(plane: Plane, distance: number): number {
+  let timeFlight = calcFlightTime(plane, distance) / 60 // convert it back to hours
+  let fuelBurn = plane.fuelBurn
+
+  if (timeFlight > 1.5) {
+    return fuelBurn * (405 + timeFlight)
+  } else {
+    return fuelBurn * timeFlight * 5.5
+  }
 }

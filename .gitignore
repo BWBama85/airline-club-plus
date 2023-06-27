@@ -29,6 +29,7 @@ out/
 build/chrome-mv3-dev/
 build/chrome-mv3-prod/
 dist/
+temp/
 
 # plasmo - https://www.plasmo.com
 .plasmo
