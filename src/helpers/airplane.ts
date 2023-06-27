@@ -1,35 +1,42 @@
 export function addInputCells(): void {
-  const mainPanel: HTMLInputElement = document.querySelector(
-    "#airplaneCanvas .mainPanel .section .table .table-header:first-child"
-  )
+  const hangarDiv = document.querySelector('div[data-type="hangar"]')
 
-  const distanceDiv = document.createElement("div")
-  const runwayDiv = document.createElement("div")
-  const minCapacityDiv = document.createElement("div")
-  const minCirculationDiv = document.createElement("div")
-  const selectionDiv = document.createElement("div")
+  if (hangarDiv && !hangarDiv.classList.contains("selected")) {
+    const mainPanel: HTMLInputElement = document.querySelector(
+      "#airplaneCanvas .mainPanel .section .table .table-header:first-child"
+    )
 
-  distanceDiv.classList.add("cell", "detailsSelection")
-  runwayDiv.classList.add("cell", "detailsSelection")
-  minCapacityDiv.classList.add("cell", "detailsSelection")
-  minCirculationDiv.classList.add("cell", "detailsSelection")
-  selectionDiv.classList.add("cell", "detailsSelection")
+    // Remove the style attribute
+    hangarDiv.removeAttribute("style")
 
-  selectionDiv.style.minWidth = "160px"
-  selectionDiv.style.textAlign = "right"
+    const distanceDiv = document.createElement("div")
+    const runwayDiv = document.createElement("div")
+    const minCapacityDiv = document.createElement("div")
+    const minCirculationDiv = document.createElement("div")
+    const selectionDiv = document.createElement("div")
 
-  distanceDiv.innerHTML = 'Distance: <input type="text" id="fightRange" value="1000" />'
-  runwayDiv.innerHTML = 'Runway length: <input type="text" id="runway" value="3600" />'
-  minCapacityDiv.innerHTML = 'Min. Capacity: <input type="text" id="min_capacity" value="0" />'
-  minCirculationDiv.innerHTML = 'Min. Circulation: <input type="text" id="min_circulation" value="0" />'
-  selectionDiv.innerHTML = `
+    distanceDiv.classList.add("cell", "detailsSelection")
+    runwayDiv.classList.add("cell", "detailsSelection")
+    minCapacityDiv.classList.add("cell", "detailsSelection")
+    minCirculationDiv.classList.add("cell", "detailsSelection")
+    selectionDiv.classList.add("cell", "detailsSelection")
+
+    selectionDiv.style.minWidth = "160px"
+    selectionDiv.style.textAlign = "right"
+
+    distanceDiv.innerHTML = 'Distance: <input type="text" id="fightRange" value="1000" />'
+    runwayDiv.innerHTML = 'Runway length: <input type="text" id="runway" value="3600" />'
+    minCapacityDiv.innerHTML = 'Min. Capacity: <input type="text" id="min_capacity" value="0" />'
+    minCirculationDiv.innerHTML = 'Min. Circulation: <input type="text" id="min_circulation" value="0" />'
+    selectionDiv.innerHTML = `
     <label for="use_flight_total">Flight Fuel Total <input type="checkbox" id="use_flight_total" /></label>
     `
-  mainPanel.appendChild(distanceDiv)
-  mainPanel.appendChild(runwayDiv)
-  mainPanel.appendChild(minCapacityDiv)
-  mainPanel.appendChild(minCirculationDiv)
-  mainPanel.appendChild(selectionDiv)
+    mainPanel.appendChild(distanceDiv)
+    mainPanel.appendChild(runwayDiv)
+    mainPanel.appendChild(minCapacityDiv)
+    mainPanel.appendChild(minCirculationDiv)
+    mainPanel.appendChild(selectionDiv)
+  }
 }
 
 export function addTableHeaderCells(): void {
