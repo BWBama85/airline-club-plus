@@ -10,7 +10,7 @@ import {
   setupNewDataFilterElements
 } from "~/helpers/airplane"
 import { createCellContents, createRowElement, populateTableCells } from "~/helpers/tables"
-import { calcFlightTime, calcFuelBurn, sortByProperty } from "~/helpers/utils"
+import { calcFlightTime, calcFuelBurn, createLoadingElement, sortByProperty } from "~/helpers/utils"
 import { loadAirplaneModelStats } from "~/modules/loadAirplaneModelStats"
 
 export const config: PlasmoCSConfig = {
@@ -77,7 +77,16 @@ window.addEventListener("DOMContentLoaded", async () => {
 
       if (plane.in_use === undefined) {
         plane.in_use = -1
-        await window.loadAirplaneModelStats(plane, { totalOnly: true })
+
+        const loadingElement = createLoadingElement()
+        const airplaneModelTable = document.getElementById("airplaneModelTable")
+        airplaneModelTable?.appendChild(loadingElement)
+
+        try {
+          await window.loadAirplaneModelStats(plane, { totalOnly: true })
+        } finally {
+          loadingElement.parentNode.removeChild(loadingElement)
+        }
       }
     }
 
