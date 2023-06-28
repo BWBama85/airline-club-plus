@@ -177,10 +177,8 @@ export async function updateAirplaneModelTable(sortProperty: string, sortOrder: 
     }
     sortOrder = selectedSortHeader.getAttribute("data-sort-order")
   }
-  console.log(sortProperty, sortOrder)
   //sort the list
   window.loadedModelsOwnerInfo.sort(sortByProperty(sortProperty, sortOrder == "ascending"))
-  console.log(sortProperty, sortOrder)
 
   var childElements = airplaneModelTable.querySelectorAll("div.table-row")
 
