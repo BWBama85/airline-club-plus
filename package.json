@@ -1,7 +1,7 @@
 {
   "name": "airline-club-plus",
   "displayName": "Airline Club Plus",
-  "version": "1.2.1",
+  "version": "1.3.0",
   "description": "Improves the Airline-Club.com game experience.",
   "author": "Brent Wilson <brent@thewilsonnet.com>",
   "scripts": {
