@@ -1,9 +1,12 @@
-This is an browser extension for the online game [Airline-Club.com](https://www.airline-club.com/). The extension uses the [Plasmo extension](https://docs.plasmo.com/) project bootstrapped with [`plasmo init`](https://www.npmjs.com/package/plasmo).
+This is an browser extension for the online game [Airline-Club.com](https://www.airline-club.com/). The extension uses the [Plasmo extension](https://docs.plasmo.com/) project.
 
 ## Features
 
 - Displays current oil price in header
-- Sends notification when oil drops below $60.
+- Sends browser notification when oil drops below $60.
+- Provides new data on the flights and airlines pages
+
+See Wiki for more information.
 
 ## Getting Started
 
