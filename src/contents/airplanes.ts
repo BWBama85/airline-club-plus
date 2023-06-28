@@ -1,17 +1,7 @@
 import type { PlasmoCSConfig } from "plasmo"
 
-import {
-  addInputCells,
-  addTableHeaderCells,
-  calculateCosts,
-  calculateUtilisation,
-  isModelOwned,
-  isValidModel,
-  setupNewDataFilterElements
-} from "~/helpers/airplane"
-import { createCellContents, createRowElement, populateTableCells } from "~/helpers/tables"
-import { calcFlightTime, calcFuelBurn, createLoadingElement, sortByProperty } from "~/helpers/utils"
 import { loadAirplaneModelStats } from "~/modules/loadAirplaneModelStats"
+import { updateAirplaneModelTable } from "~/modules/updateAirplaneModelTable"
 
 export const config: PlasmoCSConfig = {
   world: "MAIN",
@@ -19,121 +9,86 @@ export const config: PlasmoCSConfig = {
   run_at: "document_start"
 }
 
+function addInputCell(id: string, labelText: string, mainPanel: HTMLElement, value: string = "0"): void {
+  const div = document.createElement("div")
+  div.classList.add("cell", "detailsSelection")
+  div.innerHTML = `${labelText}: <input type="text" id="${id}" value="${value}" />`
+  mainPanel.appendChild(div)
+}
+
+function addCellToHeader(sortProperty: string, content: string, airplaneModelSortHeader: HTMLElement): void {
+  const div = document.createElement("div")
+  div.classList.add("cell", "clickable")
+  div.setAttribute("data-sort-property", sortProperty)
+  div.setAttribute("data-sort-order", "ascending")
+  div.style.textAlign = "right"
+  div.textContent = content
+  div.setAttribute("onclick", "toggleAirplaneModelTableSortOrder($(this))")
+  airplaneModelSortHeader.appendChild(div)
+}
+
 window.addEventListener("DOMContentLoaded", async () => {
-  addInputCells()
+  const hangarDiv = document.querySelector('div[data-type="hangar"]')
+  const mainPanel: HTMLElement = document.querySelector(
+    "#airplaneCanvas .mainPanel .section .table .table-header:first-child"
+  )
 
-  addTableHeaderCells()
+  if (hangarDiv && !hangarDiv.classList.contains("selected") && mainPanel) {
+    // Remove the style attribute
+    hangarDiv.removeAttribute("style")
 
-  setupNewDataFilterElements()
+    addInputCell("fightRange", "Distance", mainPanel, "1000")
+    addInputCell("runway", "Runway length", mainPanel, "3600")
+    addInputCell("min_capacity", "Min. Capacity", mainPanel)
+    addInputCell("min_circulation", "Min. Circulation", mainPanel)
 
-  window.updateAirplaneModelTable = async function (sortProperty: string, sortOrder: string): Promise<void> {
-    const distance = Number((document.getElementById("fightRange") as HTMLInputElement).value)
-    const runway = Number((document.getElementById("runway") as HTMLInputElement).value)
-    const min_capacity = Number((document.getElementById("min_capacity") as HTMLInputElement).value)
-    const min_circulation = Number((document.getElementById("min_circulation") as HTMLInputElement).value)
-    const use_flight_total = (document.getElementById("fuel_total") as HTMLInputElement).checked
-    const airplaneModelTable = document.getElementById("airplaneModelTable")
-
-    const airplaneTypeMap = {
-      LIGHT: 1,
-      SMALL: 1,
-      REGIONAL: 3,
-      MEDIUM: 8,
-      LARGE: 12,
-      "EXTRA LARGE": 15,
-      X_LARGE: 15,
-      JUMBO: 18,
-      SUPERSONIC: 12
-    }
-    let plane: Plane
-    for (plane of Object.values(window.loadedModelsOwnerInfo)) {
-      if (plane.range < distance || plane.runwayRequirement > runway) {
-        plane.cpp = -1
-        plane.max_rotation = -1
-        continue
-      }
-
-      const plane_category = airplaneTypeMap[plane.airplaneType.toUpperCase()]
-      const flightDuration = calcFlightTime(plane, distance)
-
-      const { utilisation, frequency } = calculateUtilisation(flightDuration, plane.turnaroundTime)
-      const { depreciationRate, maintenance, airport_fee, crew_cost, inflight_cost } = calculateCosts(
-        plane,
-        flightDuration,
-        plane_category,
-        utilisation
-      )
-
-      plane.max_rotation = frequency
-      plane.fbpf = calcFuelBurn(plane, distance)
-      plane.fbpp = plane.fbpf / plane.capacity
-      plane.fbpw = plane.fbpf * plane.max_rotation
-      plane.fuel_total =
-        (plane.fbpf * 0.08 + airport_fee + inflight_cost + crew_cost) * plane.max_rotation +
-        depreciationRate +
-        maintenance
-      plane.cpp = plane.fuel_total / (plane.capacity * plane.max_rotation)
-      plane.max_capacity = plane.capacity * plane.max_rotation
-      plane.fuel_total_info =
-        "Total Frequency Cost: $" +
-        new Intl.NumberFormat("en-US").format(Math.round(plane.fuel_total)) +
-        " / Per Flight: $" +
-        new Intl.NumberFormat("en-US").format(Math.round(plane.cpp * plane.capacity))
-
-      if (plane.in_use === undefined) {
-        plane.in_use = -1
-
-        const loadingElement = createLoadingElement()
-        const airplaneModelTable = document.getElementById("airplaneModelTable")
-        airplaneModelTable?.appendChild(loadingElement)
-
-        try {
-          await window.loadAirplaneModelStats(plane, { totalOnly: true })
-        } finally {
-          loadingElement.parentNode.removeChild(loadingElement)
-        }
-      }
-    }
-
-    if (!sortProperty && !sortOrder) {
-      const selectedSortHeader = document.querySelector("#airplaneModelSortHeader .cell.selected") as HTMLElement
-      sortProperty = selectedSortHeader.getAttribute("data-sort-property")
-      if (sortProperty === "capacity") {
-        sortProperty = "max_capacity"
-      } else if (sortProperty === "cpp" && use_flight_total) {
-        sortProperty = "fuel_total"
-      }
-      sortOrder = selectedSortHeader.getAttribute("data-sort-order")
-    }
-    console.log(sortProperty, sortOrder)
-    //sort the list
-    window.loadedModelsOwnerInfo.sort(sortByProperty(sortProperty, sortOrder == "ascending"))
-    console.log(sortProperty, sortOrder)
-
-    var childElements = airplaneModelTable.querySelectorAll("div.table-row")
-
-    childElements.forEach(function (child) {
-      airplaneModelTable.removeChild(child)
-    })
-
-    let modelOwnerInfo: Plane
-    for (modelOwnerInfo of Object.values(window.loadedModelsOwnerInfo)) {
-      modelOwnerInfo.in_use = modelOwnerInfo.in_use || 0
-
-      const isOwned = isModelOwned(modelOwnerInfo)
-
-      if (!isValidModel(modelOwnerInfo, min_capacity, min_circulation)) {
-        continue
-      }
-
-      const row = createRowElement(modelOwnerInfo, isOwned)
-      const cells = createCellContents(modelOwnerInfo)
-
-      populateTableCells(row, cells, modelOwnerInfo.fuel_total_info)
-
-      airplaneModelTable.appendChild(row)
-    }
+    // Additional adjustments for the selectionDiv
+    const selectionDiv = document.createElement("div")
+    selectionDiv.classList.add("cell", "detailsSelection")
+    selectionDiv.style.minWidth = "160px"
+    selectionDiv.style.textAlign = "right"
+    selectionDiv.innerHTML = `<label for="fuel_total">Flight Fuel Total <input type="checkbox" id="fuel_total" /></label>`
+    mainPanel.appendChild(selectionDiv)
   }
+
+  const columnWidthPercents: number[] = [17, 12, 9, 7, 7, 7, 7, 9, 7, 6, 3, 5]
+  const airplaneModelSortHeader: HTMLElement = document.getElementById("airplaneModelSortHeader")
+
+  if (airplaneModelSortHeader) {
+    addCellToHeader("max_rotation", "⏲", airplaneModelSortHeader)
+    addCellToHeader("cpp", "$/🧍", airplaneModelSortHeader)
+    addCellToHeader("in_use", "#✈", airplaneModelSortHeader)
+  }
+
+  const headerCells = document.querySelectorAll("#airplaneModelSortHeader .cell")
+  headerCells.forEach((headerCell, index) => {
+    headerCell.setAttribute("style", `width: ${columnWidthPercents[index]}%`)
+  })
+
+  const airplaneModelTable = document.querySelector("#airplaneModelTable .table-header")
+  if (airplaneModelTable) {
+    let html = ""
+    columnWidthPercents.forEach((width) => {
+      html += `<div class="cell" style="width: ${width}%; border-bottom: none;"></div>`
+    })
+    airplaneModelTable.innerHTML = html
+  }
+
+  const totalOwnedElems = document.querySelectorAll('[data-sort-property="totalOwned"]')
+  totalOwnedElems.forEach((elem) => {
+    elem.textContent = "Owned"
+    elem.setAttribute("style", "width: 6%;")
+  })
+
+  const newDataFilterElements: string[] = ["#fightRange", "#runway", "#min_capacity", "#min_circulation", "#fuel_total"]
+  newDataFilterElements.forEach((id) => {
+    const element = document.querySelector(id)
+    if (element instanceof HTMLElement) {
+      element.addEventListener("change", () => window.updateAirplaneModelTable(element.id, "descending"))
+    }
+  })
+
+  window.updateAirplaneModelTable = updateAirplaneModelTable
 
   window.loadAirplaneModelStats = loadAirplaneModelStats
 })

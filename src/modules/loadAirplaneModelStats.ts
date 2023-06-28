@@ -1,24 +1,9 @@
+import { CacheClass } from "~helpers/CacheClass"
 import { fetchData } from "~helpers/apiService"
 
-class Cache {
-  private cache: { [key: string]: number } = {}
-
-  set(key: string, value: number): void {
-    this.cache[key] = value
-  }
-
-  get(key: string): number {
-    return this.cache[key]
-  }
-
-  has(key: string): boolean {
-    return this.cache.hasOwnProperty(key)
-  }
-}
-
-const cachedTotalsById = new Cache()
-
 export async function loadAirplaneModelStats(modelInfo: Plane, opts: Opts = { totalOnly: false }) {
+  const cachedTotalsById = new CacheClass()
+
   let favoriteIcon = document.querySelector("#airplaneModelDetail .favorite") as HTMLImageElement
   let model = window.loadedModelsById[modelInfo.id]
   let url: string

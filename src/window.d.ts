@@ -10,17 +10,13 @@ interface Window {
   toggleLinksTableSortOrder: (sortHeader: HTMLElement) => void
   updateAirplaneModelTable: (sortProperty: string, sortOrder: string) => void
   updateLoadedLinks: (links: Link[]) => void
-  updateModelInfo: (modelId: number) => void
-  updatePlanLinkInfo: (linkInfo: LinkInfo) => void
   updateTopOperatorsTable: (stats: Stats) => void
-  updateTotalValues: () => void
   activeAirline?: ActiveAirline
   link: Link
   loadedLinks: Link[]
   loadedModelsById: { [key: string]: Plane }
   loadedModelsOwnerInfo: Plane[]
   selectedLink: number
-  selectedModelId: number
 }
 
 interface ActiveAirline {
