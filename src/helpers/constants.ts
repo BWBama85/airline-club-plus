@@ -3,7 +3,6 @@ export namespace Constants {
   export const SUPERSONIC_SPEED_FACTOR = 1.5 // Speed factor for SUPERSONIC type
   export const SPEED_FACTORS = [350, 500, 700] // Maximum speeds for different phases of flight
   export const STYLES_FROM_GOOD_TO_BAD: Array<{ color: string; fontWeight?: string }> = [
-    // Styles for the color key
     { color: "#29FF66" },
     { color: "#5AB874" },
     { color: "inherit" },

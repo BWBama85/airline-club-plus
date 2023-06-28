@@ -3,28 +3,34 @@ import { formatCurrency, getStyleFromTier, getTierFromPercent } from "~/helpers/
 function appendCell(
   row: HTMLDivElement,
   title: string,
-  content: string | Document,
+  content: string,
+  style?: string,
   isEllipsis: boolean = false,
-  align: "left" | "right" = "left",
-  style?: string
+  align: "left" | "right" = "left"
 ): void {
   const cell = createCell(title, content, align, isEllipsis, style)
   row.appendChild(cell)
 }
 
-function createCell(title, content, align = "left", isEllipsis = false, style = "") {
+function createCell(
+  title: string,
+  content: string,
+  align = "left",
+  isEllipsis = false,
+  style?: string
+): HTMLDivElement {
   const cell = document.createElement("div")
   cell.className = "cell"
-  cell.title = title
   cell.style.textAlign = align
-  cell.style.cssText = style
+  cell.title = title
+  cell.textContent = content
+  if (style) {
+    cell.style.cssText = style
+  }
   if (isEllipsis) {
     cell.style.textOverflow = "ellipsis"
     cell.style.overflow = "hidden"
     cell.style.whiteSpace = "pre"
-  }
-  if (typeof content === "string") {
-    cell.textContent = content
   }
   return cell
 }
@@ -54,14 +60,19 @@ function getKeyedStyleFromLink(
   link: Link,
   keyName: string,
   ...args: number[]
-): any {
+): { color: string; fontWeight?: string } {
+  let colorKeyMap = colorKeyMaps[keyName]
+
+  // Update the colorKeyMap reference along with the colorKeyMaps record
   if (!colorKeyMaps[keyName]) {
-    colorKeyMaps[keyName] = new WeakMap<Link, any>()
-  } else if (colorKeyMaps[keyName].has(link)) {
-    return colorKeyMaps[keyName].get(link)
+    colorKeyMap = colorKeyMaps[keyName] = new WeakMap<Link, any>()
+  } else if (colorKeyMap.has(link)) {
+    // Use the local reference
+    return colorKeyMap.get(link)
   }
 
   const data = window.loadedLinks.map((l) => l[keyName])
+
   const avg = data.reduce((sum, acc) => (sum += acc), 0) / window.loadedLinks.length
   const min = Math.max(0, ...data)
 
@@ -71,7 +82,7 @@ function getKeyedStyleFromLink(
   link.tiers[keyName] = tier
 
   const colorResult = getStyleFromTier(tier)
-  colorKeyMaps[keyName].set(link, colorResult)
+  colorKeyMap.set(link, colorResult)
 
   return colorResult
 }
@@ -105,10 +116,17 @@ function populateLinkRowCells(colorKeyMaps: Record<string, WeakMap<Link, any>>, 
   // Append cells for various attributes
   appendCell(row, srcAirportFull, srcAirportFull.slice(-4, -1))
   appendCell(row, destAirportFull, destAirportFull.slice(-4, -1))
-  appendCell(row, "", abbreviateModelName(link.model), true)
-  appendCell(row, "", `${link.distance}km`, false, "right")
-  appendCell(row, "", `${link.totalCapacity} (${link.frequency})`, false, "right")
-  appendCell(row, "", link.totalPassengers.toString(), false, "right")
+  appendCell(row, "", abbreviateModelName(link.model), null, true)
+  appendCell(row, "", `${link.distance}km`, null, false, "right")
+  appendCell(
+    row,
+    "",
+    `${link.totalCapacity} (${link.frequency})`,
+    colorKeyMaps["totalCapacity"]?.get(link),
+    false,
+    "right"
+  )
+  appendCell(row, "", link.totalPassengers.toString(), colorKeyMaps["totalPassengers"]?.get(link), false, "right")
 
   // Append cells with styling
   const keys = [
@@ -131,8 +149,22 @@ function populateLinkRowCells(colorKeyMaps: Record<string, WeakMap<Link, any>>, 
     formatCurrency(link.profitPerFlight),
     formatCurrency(link.profitPerHour)
   ]
+
+  const minMaxArgs = [[0, 100], [0, 1], [], [], [0, 136.5], [], [], []]
   keys.forEach((key, index) => {
-    appendCell(row, "", contents[index], false, "right", getKeyedStyleFromLink(colorKeyMaps, link, key))
+    const styleObject = getKeyedStyleFromLink(colorKeyMaps, link, key, ...minMaxArgs[index])
+    let styleString = ""
+
+    // Construct the style string based on what's defined in styleObject
+    if (styleObject.color) {
+      styleString += `color: ${styleObject.color}; `
+    }
+
+    if (styleObject.fontWeight) {
+      styleString += `font-weight: ${styleObject.fontWeight};`
+    }
+
+    appendCell(row, "", contents[index], styleString, false, "right")
   })
 
   // Calculate rank and apply styling
@@ -142,11 +174,11 @@ function populateLinkRowCells(colorKeyMaps: Record<string, WeakMap<Link, any>>, 
   )
 
   if (link.tiersRank < 2) {
-    row.style.textShadow = "0 0 3px gold"
+    row.style.backgroundColor = "rgba(0,153,51, 0.3)"
   }
 
   if (link.tiersRank > 27) {
-    row.style.textShadow = "0 0 3px red"
+    row.style.backgroundColor = "rgba(204, 51, 51, 0.3)"
   }
 
   prependCell(row, link.tiersRank.toString(), link.tiersRank.toString())

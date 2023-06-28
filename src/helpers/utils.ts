@@ -24,10 +24,16 @@ export function getTierFromPercent(val: number, min = 0, max = 100): number {
   const availableRange = max - min
   const ranges = [0.95, 0.8, 0.75, 0.6, 0.5].map((multiplier) => availableRange * multiplier + min)
 
-  for (let i = 0; i < ranges.length; i++) {
-    if (val > ranges[i]) {
-      return i
-    }
+  if (val > ranges[0]) {
+    return 0
+  } else if (val > ranges[1]) {
+    return 1
+  } else if (val > ranges[2]) {
+    return 2
+  } else if (val > ranges[3]) {
+    return 3
+  } else if (val > ranges[4]) {
+    return 4
   }
 
   return 5
