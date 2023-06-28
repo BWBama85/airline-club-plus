@@ -1,21 +1,25 @@
-export const NUMBER_FORMAT = new Intl.NumberFormat("en-US")
+import { Constants } from "~/helpers/constants"
 
-type SortableObject = {
-  [key: string]: any
-}
-
+/**
+ * Returns a style object based on a given tier number.
+ *
+ * @param {number} tier - The tier number.
+ * @returns An object containing color and possibly fontWeight.
+ */
 export function getStyleFromTier(tier: number): { color: string; fontWeight?: string } {
-  const stylesFromGoodToBad: Array<{ color: string; fontWeight?: string }> = [
-    { color: "#29FF66" },
-    { color: "#5AB874" },
-    { color: "inherit" },
-    { color: "#FA8282" },
-    { color: "#FF6969" },
-    { color: "#FF3D3D", fontWeight: "bold" }
-  ]
-  return stylesFromGoodToBad[tier] || { color: "inherit" }
+  return Constants.STYLES_FROM_GOOD_TO_BAD[tier] || { color: "inherit" }
 }
 
+/**
+ * Calculates a 'tier' for a given value as a proportion within a specified range.
+ * The 'tier' is a value from 0 to 5, based on which segment of the range the value falls into.
+ * The segments are determined by percentages of the total range: >95%, >80%, >75%, >60%, >50%, <=50%.
+ *
+ * @param {number} val - The value for which to calculate the tier.
+ * @param {number} [min=0] - The minimum value of the range (default is 0).
+ * @param {number} [max=100] - The maximum value of the range (default is 100).
+ * @returns {number} The tier of the value, a number between 0 and 5.
+ */
 export function getTierFromPercent(val: number, min = 0, max = 100): number {
   const availableRange = max - min
   const ranges = [0.95, 0.8, 0.75, 0.6, 0.5].map((multiplier) => availableRange * multiplier + min)
@@ -29,53 +33,55 @@ export function getTierFromPercent(val: number, min = 0, max = 100): number {
   return 5
 }
 
-export function sortByProperty(
-  property: string,
-  ascending: boolean = true
-): (a: SortableObject, b: SortableObject) => number {
-  const sortOrder = ascending ? 1 : -1
-
-  return function (a: SortableObject, b: SortableObject): number {
-    let aVal = a[property]
-    let bVal = b[property]
-    if (Array.isArray(aVal) && Array.isArray(bVal)) {
-      aVal = aVal.length
-      bVal = bVal.length
-    }
-    const result = aVal < bVal ? -1 : aVal > bVal ? 1 : 0
-    return result * sortOrder
-  }
-}
-
+/**
+ * Calculate the flight time for a plane given a distance.
+ * @param {Plane} plane - The plane to calculate flight time for.
+ * @param {number} distance - The distance to calculate flight time for.
+ * @returns {number} The flight time in minutes.
+ */
 export function calcFlightTime(plane: Plane, distance: number): number {
-  const SUPERSONIC = "SUPERSONIC"
-  const SPEED_FACTORS = [350, 500, 700]
-  let speedFactor = plane.airplaneType.toUpperCase() === SUPERSONIC ? 1.5 : 1
+  let speedFactor = plane.airplaneType.toUpperCase() === "SUPERSONIC" ? Constants.SUPERSONIC_SPEED_FACTOR : 1
   let speed = plane.speed * speedFactor
 
-  let flightDistances = [300, 400, 400].map((dist, index) => {
-    let distA = Math.min(distance, dist)
-    distance = Math.max(0, distance - distA)
-    return distA / Math.min(speed, SPEED_FACTORS[index])
+  // Calculate flight time for different segments of flight with different speeds
+  let flightDistances = Constants.SPEED_FACTORS.map((maxSpeed) => {
+    let distSegment = Math.min(distance, maxSpeed)
+    distance = Math.max(0, distance - distSegment)
+    return distSegment / Math.min(speed, maxSpeed)
   })
 
+  // Add remaining distance if any
   flightDistances.push(Math.max(0, distance) / speed)
-  let timeFlight = flightDistances.reduce((a, b) => a + b)
 
-  return timeFlight * 60
+  let totalFlightTime = flightDistances.reduce((a, b) => a + b)
+
+  return totalFlightTime * 60 // Return in minutes
 }
 
+/**
+ * Calculate the fuel burn for a plane given a distance.
+ * @param {Plane} plane - The plane to calculate fuel burn for.
+ * @param {number} distance - The distance to calculate fuel burn for.
+ * @returns {number} The fuel burn.
+ */
 export function calcFuelBurn(plane: Plane, distance: number): number {
-  let timeFlight = calcFlightTime(plane, distance) / 60 // convert it back to hours
+  let timeFlight = calcFlightTime(plane, distance) / 60 // Convert it back to hours
   let fuelBurn = plane.fuelBurn
 
-  if (timeFlight > 1.5) {
+  const LONG_FLIGHT_TIME = 1.5 // Time in hours indicating a long flight
+  const FUEL_BURN_RATE_SHORT = 5.5 // Rate of fuel burn for short flights
+
+  if (timeFlight > LONG_FLIGHT_TIME) {
     return fuelBurn * (405 + timeFlight)
   } else {
-    return fuelBurn * timeFlight * 5.5
+    return fuelBurn * timeFlight * FUEL_BURN_RATE_SHORT
   }
 }
 
+/**
+ *
+ * @returns A div element with a loading message.
+ */
 export function createLoadingElement(): HTMLDivElement {
   const loadingElement = document.createElement("div")
   loadingElement.id = "loading-element"
@@ -84,4 +90,13 @@ export function createLoadingElement(): HTMLDivElement {
   loadingElement.textContent =
     "Please wait, loading all the airplane models. This takes a few seconds on the first load."
   return loadingElement
+}
+
+export function formatCurrency(num: number): string {
+  let formatUSD = new Intl.NumberFormat("en-US", {
+    style: "currency",
+    currency: "USD",
+    minimumFractionDigits: 2
+  })
+  return `${formatUSD.format(num).replace(".00", "")}`
 }

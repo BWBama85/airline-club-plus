@@ -34,3 +34,12 @@ interface TopAirlines {
   airline: Airline
   airplaneCount: number
 }
+
+type SortableObject = {
+  [key: string]: any
+}
+
+interface OilData {
+  cycle: number
+  price: number
+}

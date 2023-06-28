@@ -1,7 +1,7 @@
 import type { PlasmoCSConfig, PlasmoCSUIJSXContainer, PlasmoRender } from "plasmo"
 import { createRoot } from "react-dom/client"
 
-import OilOverlay from "~/modules/OilOverlay"
+import OilOverlay from "~/components/OilOverlay"
 
 export const config: PlasmoCSConfig = {
   matches: ["https://*.airline-club.com/*"]

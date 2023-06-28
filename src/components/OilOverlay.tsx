@@ -1,28 +1,29 @@
 import type { PlasmoCSUIProps } from "plasmo"
-import { useEffect, useState } from "react"
+import { useEffect, useMemo, useState } from "react"
 import type { FC } from "react"
 
 import { Storage } from "@plasmohq/storage"
 
-import { getStyleFromTier, getTierFromPercent } from "~helpers/utils"
-
-interface OilData {
-  cycle: number
-  price: number
-}
+import { formatCurrency, getStyleFromTier, getTierFromPercent } from "~helpers/utils"
 
 const storage = new Storage()
 
 const OilOverlay: FC<PlasmoCSUIProps> = () => {
-  const [oilPrice, setOilPrice] = useState<number>()
-  const [className, setClassName] = useState("latestOilPriceShortCut clickable")
+  const [state, setState] = useState({
+    oilPrice: undefined,
+    className: "latestOilPriceShortCut clickable"
+  })
 
   useEffect(() => {
     const checkLocalStorageAndUpdate = async () => {
       const oilData = (await storage.get("oilData")) as OilData[]
       if (oilData) {
         const latestPrice = oilData.slice(-1)[0].price
-        setOilPrice(latestPrice)
+        const tierForPrice = 5 - getTierFromPercent(latestPrice, 40, 80)
+        setState({
+          oilPrice: latestPrice,
+          className: tierForPrice < 2 ? "latestOilPriceShortCut clickable glow" : "latestOilPriceShortCut clickable"
+        })
       }
     }
 
@@ -34,25 +35,18 @@ const OilOverlay: FC<PlasmoCSUIProps> = () => {
     }
   }, [])
 
-  const tierForPrice = oilPrice ? 5 - getTierFromPercent(oilPrice, 40, 80) : undefined
-
-  useEffect(() => {
-    if (tierForPrice < 2) {
-      setClassName("latestOilPriceShortCut clickable glow")
-    } else {
-      setClassName("latestOilPriceShortCut clickable")
-    }
-  }, [tierForPrice])
-
-  const oilPriceStyle = getStyleFromTier(tierForPrice)
+  const oilPriceStyle = useMemo(
+    () => getStyleFromTier(state.oilPrice ? 5 - getTierFromPercent(state.oilPrice, 40, 80) : undefined),
+    [state.oilPrice]
+  )
 
   return (
     <span
       style={{ marginLeft: 10, position: "relative", display: "inline-block" }}
-      className={className}
+      className={state.className}
       title="Latest Oil Price">
       <span className="latest-price label" style={{ ...oilPriceStyle }}>
-        {oilPrice ? `$${new Intl.NumberFormat("en-US").format(oilPrice)}` : "Loading..."}
+        {state.oilPrice ? `${formatCurrency(state.oilPrice)}` : "Loading..."}
       </span>
     </span>
   )
