@@ -19,3 +19,6 @@ npm run dev
 ```
 
 For further guidance, [visit the Plasmo Documentation](https://docs.plasmo.com/)
+
+---
+Idea based off of [Better Airline Club](https://gist.github.com/Bohaska/115acef3ea193ed9f8dcd3006c1c56f5)
