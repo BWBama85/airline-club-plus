@@ -1,3 +1,9 @@
+// TABLE_HEADER_WIDTHS: Percentages specifying the width of each column.
+// SUPERSONIC_SPEED_FACTOR: Represents the speed of supersonic aircraft types.
+// SPEED_FACTORS: Maximum speed values for different phases of a flight, or different types of aircraft.
+// STYLES_FROM_GOOD_TO_BAD: Used to visually indicate data performance (e.g., green for good, red for bad).
+// TABLE_HEADERS: Each column has a className (CSS class for styling), style (inline CSS style, with width derived from TABLE_HEADER_WIDTHS), sortProperty (data attribute by which to sort), sortOrder (initial sort direction), onClick (JavaScript function to call when the column header is clicked), title (tooltip text), and content (visible text in the header cell).
+
 export namespace Constants {
   const TABLE_HEADER_WIDTHS = [8, 8, 8, 7, 9, 5, 5, 5, 9, 8, 6, 6, 7, 7, 2]
   export const SUPERSONIC_SPEED_FACTOR = 1.5 // Speed factor for SUPERSONIC type
