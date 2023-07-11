@@ -106,3 +106,32 @@ export function formatCurrency(num: number): string {
   })
   return `${formatUSD.format(num).replace(".00", "")}`
 }
+
+// Function to create a comparison function for sorting
+// --
+// Creates a comparison function for sorting objects based on a given property.
+// The comparison function can be used directly in Array.prototype.sort().
+// If the values of the property in the objects are arrays, it sorts based on their lengths.
+// If the `ascending` parameter is false, it sorts in descending order, otherwise it sorts in ascending order.
+
+// @param {string} property - The name of the property to sort the objects by.
+// @param {boolean} [ascending=true] - Indicates whether the sort order should be ascending (default) or descending.
+// @returns {(a: SortableObject, b: SortableObject) => number} - A comparison function that can be used in Array.prototype.sort().
+
+export function sortByProperty(
+  property: string,
+  ascending: boolean = true
+): (a: SortableObject, b: SortableObject) => number {
+  const sortOrder = ascending ? 1 : -1
+
+  return function (a: SortableObject, b: SortableObject): number {
+    let aVal = a[property]
+    let bVal = b[property]
+    if (Array.isArray(aVal) && Array.isArray(bVal)) {
+      aVal = aVal.length
+      bVal = bVal.length
+    }
+    const result = aVal < bVal ? -1 : aVal > bVal ? 1 : 0
+    return result * sortOrder
+  }
+}

@@ -1,5 +1,5 @@
 // Import necessary functions and modules
-import { calcFlightTime, calcFuelBurn, createLoadingElement, formatCurrency } from "~/helpers/utils"
+import { calcFlightTime, calcFuelBurn, createLoadingElement, formatCurrency, sortByProperty } from "~/helpers/utils"
 
 // Function to calculate the costs related to an airplane
 const calculateCosts = (plane: Plane, flightDuration: number, plane_category: number, utilisation: number) => {
@@ -9,7 +9,7 @@ const calculateCosts = (plane: Plane, flightDuration: number, plane_category: nu
   const airport_fee = (500 * plane_category + plane.capacity * 10) * 2 // Calculate the airport fees
   const crew_cost_per_hour = plane.capacity * (flightDuration / 60) * 12 // Calculate the crew cost per hour
   const inflight_cost_per_passenger = (20 + (8 * flightDuration) / 60) * plane.capacity * 2 // Calculate the in-flight costs per passenger
-  
+
   // Return the calculated costs
   return { depreciationRate, maintenance, airport_fee, crew_cost_per_hour, inflight_cost_per_passenger }
 }
@@ -87,32 +87,6 @@ const populateTableCells = (row: HTMLElement, cells: string[], title: string) =>
   })
 }
 
-// Function to create a comparison function for sorting 
-// --
-// Creates a comparison function for sorting objects based on a given property.
-// The comparison function can be used directly in Array.prototype.sort().
-// If the values of the property in the objects are arrays, it sorts based on their lengths.
-// If the `ascending` parameter is false, it sorts in descending order, otherwise it sorts in ascending order.
-
-// @param {string} property - The name of the property to sort the objects by.
-// @param {boolean} [ascending=true] - Indicates whether the sort order should be ascending (default) or descending.
-// @returns {(a: SortableObject, b: SortableObject) => number} - A comparison function that can be used in Array.prototype.sort().
-
-function sortByProperty(property: string, ascending: boolean = true): (a: SortableObject, b: SortableObject) => number {
-  const sortOrder = ascending ? 1 : -1
-
-  return function (a: SortableObject, b: SortableObject): number {
-    let aVal = a[property]
-    let bVal = b[property]
-    if (Array.isArray(aVal) && Array.isArray(bVal)) {
-      aVal = aVal.length
-      bVal = bVal.length
-    }
-    const result = aVal < bVal ? -1 : aVal > bVal ? 1 : 0
-    return result * sortOrder
-  }
-}
-
 // Async function to update the airplane model table
 export async function updateAirplaneModelTable(sortProperty: string, sortOrder: string): Promise<void> {
   // Get all necessary user input values
@@ -135,7 +109,7 @@ export async function updateAirplaneModelTable(sortProperty: string, sortOrder: 
     JUMBO: 18,
     SUPERSONIC: 12
   }
-  
+
   let plane: Plane
   for (plane of Object.values(window.loadedModelsOwnerInfo)) {
     // Check if the range is enough and the runway requirement is not too high
@@ -203,7 +177,7 @@ export async function updateAirplaneModelTable(sortProperty: string, sortOrder: 
 
   // Clear the existing rows
   var childElements = airplaneModelTable.querySelectorAll("div.table-row")
-  
+
   childElements.forEach(function (child) {
     airplaneModelTable.removeChild(child)
   })
